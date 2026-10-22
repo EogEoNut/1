@@ -1,0 +1,77 @@
+import { expect, test } from '@playwright/test'
+
+test.beforeEach(async ({ page }) => { await page.goto('/') })
+
+test('샘플 표시, 검색, 종류 필터와 빈 결과 복구', async ({ page }) => {
+  await expect(page.getByText('현재 모든 총기·부착물·슬롯·수치는')).toBeVisible()
+  await expect(page.locator('.weapon-card')).toHaveCount(3)
+  await page.getByRole('textbox', { name: '총기 이름 또는 종류 검색' }).fill('스위프트')
+  await expect(page.locator('.weapon-card')).toHaveCount(1)
+  await page.getByRole('textbox').fill('없는총기')
+  await expect(page.getByText('검색 결과가 없습니다')).toBeVisible()
+  await page.getByRole('button', { name: '필터 초기화' }).click()
+  await page.getByRole('button', { name: '지정사수소총', exact: true }).click()
+  await expect(page.locator('.weapon-card')).toHaveCount(1)
+  await expect(page.locator('.weapon-card')).toContainText('DM-03 노마드')
+})
+
+test('장착, 교체, 해제와 초기화가 능력치 및 기여도를 갱신한다', async ({ page }) => {
+  await expect(page.getByTestId('current-control')).toHaveText('62')
+  await page.locator('[data-slot="muzzle"]').click()
+  await page.getByRole('button', { name: /제어형 제퇴기/ }).click()
+  await expect(page.getByTestId('current-control')).toHaveText('72')
+  await expect(page.getByTestId('current-handling')).toHaveText('51')
+  await expect(page.locator('.contribution')).toContainText('제어형 제퇴기')
+  await page.getByRole('button', { name: /롱 소음기/ }).click()
+  await expect(page.getByTestId('current-control')).toHaveText('62')
+  await expect(page.getByTestId('current-stability')).toHaveText('64')
+  await page.getByRole('button', { name: /기본 구성 추가 부착물/ }).click()
+  await expect(page.getByTestId('current-stability')).toHaveText('58')
+  await page.getByRole('button', { name: /제어형 제퇴기/ }).click()
+  await page.getByRole('button', { name: '전체 초기화' }).click()
+  await expect(page.getByTestId('current-control')).toHaveText('62')
+  await expect(page.locator('.has-part')).toHaveCount(0)
+})
+
+test('충돌 부착물을 차단하고 제거 후 다시 허용한다', async ({ page }) => {
+  await page.locator('[data-slot="barrel"]').click()
+  await page.getByRole('button', { name: /컴팩트 총열/ }).click()
+  await page.locator('[data-slot="muzzle"]').click()
+  await expect(page.getByRole('button', { name: /롱 소음기/ })).toBeDisabled()
+  await expect(page.getByText('컴팩트 총열 장착 중: 함께 장착할 수 없습니다.')).toBeVisible()
+  await page.getByRole('button', { name: '전체 초기화' }).click()
+  await expect(page.getByRole('button', { name: /롱 소음기/ })).toBeEnabled()
+})
+
+test('총기 변경은 구성을 초기화하고 지원 부착물만 보여준다', async ({ page }) => {
+  await page.locator('[data-slot="optic"]').click()
+  await page.getByRole('button', { name: /정밀 조준경/ }).click()
+  await page.getByRole('button', { name: /SM-02 스위프트/ }).click()
+  await expect(page.getByTestId('current-handling')).toHaveText('78')
+  await expect(page.locator('.has-part')).toHaveCount(0)
+  await page.locator('[data-slot="optic"]').click()
+  await expect(page.getByRole('button', { name: /정밀 조준경/ })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: /리플렉스 조준경/ })).toBeVisible()
+})
+
+test('레이더 그래프, 안내 대화상자, 키보드 조작과 반응형 배치', async ({ page }) => {
+  await page.getByRole('button', { name: '레이더 그래프' }).click()
+  await expect(page.getByRole('img', { name: /비교 레이더 그래프/ })).toBeVisible()
+  await page.getByRole('button', { name: '데이터 안내', exact: true }).click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.getByRole('dialog')).toContainText('미검증')
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog')).not.toBeVisible()
+  await page.keyboard.press('/')
+  await expect(page.getByRole('textbox')).toBeFocused()
+  await page.getByRole('textbox').press('Tab')
+  await page.locator('[data-slot="optic"]').click()
+  await page.getByRole('button', { name: '부착물 선택 닫기' }).click()
+  await expect(page.locator('[data-slot="optic"]')).toBeFocused()
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth)
+  expect(overflow).toBe(false)
+})
+
+test('화면 캡처', async ({ page }, testInfo) => {
+  await page.screenshot({ path: testInfo.outputPath('workbench.png'), fullPage: true })
+})

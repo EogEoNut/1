@@ -1,0 +1,401 @@
+{
+  "version": "sample-1.0",
+  "notice": "모든 총기·슬롯·부착물·수치는 기능 검증용 가상 샘플입니다. 실제 Delta Force 게임 데이터와 호환되지 않습니다.",
+  "statModel": {
+    "kind": "sample-additive-clamped",
+    "min": 0,
+    "max": 100,
+    "unit": "샘플 점수",
+    "description": "기본값에 장착 부착물의 변화량을 합산하고 0~100으로 제한합니다. 모든 항목은 높을수록 좋습니다. 실제 게임 계산식·거리(m)·시간(ms)을 의미하지 않습니다."
+  },
+  "weapons": [
+    {
+      "id": "ar-01",
+      "name": "AR-01 신더",
+      "subtitle": "CINDER / ASSAULT RIFLE",
+      "category": "돌격소총",
+      "description": "다양한 교전 거리에 대응하는 균형 잡힌 샘플 플랫폼.",
+      "silhouette": "rifle",
+      "stats": {
+        "control": 62,
+        "handling": 54,
+        "stability": 58,
+        "mobility": 60,
+        "range": 55
+      },
+      "slots": [
+        "barrel",
+        "muzzle",
+        "foregrip",
+        "stock",
+        "magazine",
+        "optic"
+      ],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "sm-02",
+      "name": "SM-02 스위프트",
+      "subtitle": "SWIFT / SUBMACHINE GUN",
+      "category": "기관단총",
+      "description": "빠른 조작과 기동성을 중심으로 설계한 샘플 플랫폼.",
+      "silhouette": "smg",
+      "stats": {
+        "control": 48,
+        "handling": 78,
+        "stability": 46,
+        "mobility": 82,
+        "range": 30
+      },
+      "slots": [
+        "barrel",
+        "muzzle",
+        "foregrip",
+        "stock",
+        "magazine",
+        "optic"
+      ],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "dm-03",
+      "name": "DM-03 노마드",
+      "subtitle": "NOMAD / MARKSMAN RIFLE",
+      "category": "지정사수소총",
+      "description": "유효 거리와 사격 안정성을 중시하는 샘플 플랫폼.",
+      "silhouette": "dmr",
+      "stats": {
+        "control": 56,
+        "handling": 38,
+        "stability": 74,
+        "mobility": 40,
+        "range": 85
+      },
+      "slots": [
+        "barrel",
+        "muzzle",
+        "foregrip",
+        "stock",
+        "magazine",
+        "optic"
+      ],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    }
+  ],
+  "attachments": [
+    {
+      "id": "barrel-short",
+      "name": "컴팩트 총열",
+      "slot": "barrel",
+      "description": "짧은 총열로 조작과 기동성을 높입니다.",
+      "modifiers": {
+        "handling": 10,
+        "mobility": 6,
+        "range": -10,
+        "stability": -4
+      },
+      "weaponIds": [
+        "ar-01",
+        "sm-02"
+      ],
+      "incompatibleWith": [
+        "muzzle-suppressor"
+      ],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "barrel-long",
+      "name": "정밀 총열",
+      "slot": "barrel",
+      "description": "장거리 대응과 안정성을 위한 무거운 총열입니다.",
+      "modifiers": {
+        "range": 12,
+        "stability": 7,
+        "handling": -8,
+        "mobility": -6
+      },
+      "weaponIds": [
+        "ar-01",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "barrel-balanced",
+      "name": "경량 총열",
+      "slot": "barrel",
+      "description": "조작 속도를 개선하는 경량 구성입니다.",
+      "modifiers": {
+        "handling": 5,
+        "mobility": 5,
+        "stability": -3
+      },
+      "weaponIds": [
+        "sm-02",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "muzzle-brake",
+      "name": "제어형 제퇴기",
+      "slot": "muzzle",
+      "description": "반동 제어를 높이는 대신 조작 속도가 줄어듭니다.",
+      "modifiers": {
+        "control": 10,
+        "handling": -3
+      },
+      "weaponIds": [
+        "ar-01",
+        "sm-02",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "muzzle-suppressor",
+      "name": "롱 소음기",
+      "slot": "muzzle",
+      "description": "샘플 모델에서는 안정성과 거리를 개선합니다. 소음 효과는 계산하지 않습니다.",
+      "modifiers": {
+        "stability": 6,
+        "range": 5,
+        "mobility": -7
+      },
+      "weaponIds": [
+        "ar-01",
+        "sm-02",
+        "dm-03"
+      ],
+      "incompatibleWith": [
+        "barrel-short"
+      ],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "grip-vertical",
+      "name": "수직 손잡이",
+      "slot": "foregrip",
+      "description": "안정적인 연사를 위한 제어 중심 구성입니다.",
+      "modifiers": {
+        "control": 8,
+        "stability": 4,
+        "handling": -5
+      },
+      "weaponIds": [
+        "ar-01",
+        "sm-02",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "grip-angled",
+      "name": "앵글 손잡이",
+      "slot": "foregrip",
+      "description": "빠른 조작과 기본 제어를 함께 확보합니다.",
+      "modifiers": {
+        "handling": 7,
+        "control": 3,
+        "stability": -3
+      },
+      "weaponIds": [
+        "ar-01",
+        "sm-02",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "stock-steady",
+      "name": "안정형 개머리판",
+      "slot": "stock",
+      "description": "흔들림을 줄이되 기동성을 양보합니다.",
+      "modifiers": {
+        "stability": 10,
+        "control": 5,
+        "mobility": -8
+      },
+      "weaponIds": [
+        "ar-01",
+        "sm-02",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "stock-light",
+      "name": "경량 개머리판",
+      "slot": "stock",
+      "description": "가벼운 무게로 빠르게 움직일 수 있습니다.",
+      "modifiers": {
+        "mobility": 10,
+        "handling": 4,
+        "control": -5
+      },
+      "weaponIds": [
+        "ar-01",
+        "sm-02",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "mag-extended",
+      "name": "확장 탄창",
+      "slot": "magazine",
+      "description": "무게 증가에 따른 샘플 변화입니다. 장탄수는 이 MVP에서 계산하지 않습니다.",
+      "modifiers": {
+        "handling": -6,
+        "mobility": -4,
+        "stability": 3
+      },
+      "weaponIds": [
+        "ar-01",
+        "sm-02",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "mag-light",
+      "name": "경량 탄창",
+      "slot": "magazine",
+      "description": "빠른 조작을 위한 샘플 구성입니다.",
+      "modifiers": {
+        "handling": 8,
+        "mobility": 3,
+        "stability": -2
+      },
+      "weaponIds": [
+        "ar-01",
+        "sm-02",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "optic-reflex",
+      "name": "리플렉스 조준경",
+      "slot": "optic",
+      "description": "가벼운 조준경으로 조작을 보조합니다.",
+      "modifiers": {
+        "handling": 3,
+        "stability": 2
+      },
+      "weaponIds": [
+        "ar-01",
+        "sm-02",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    },
+    {
+      "id": "optic-scope",
+      "name": "정밀 조준경",
+      "slot": "optic",
+      "description": "샘플 안정성 점수를 높이는 대신 조작이 느려집니다. 배율은 계산하지 않습니다.",
+      "modifiers": {
+        "stability": 8,
+        "handling": -7,
+        "mobility": -3
+      },
+      "weaponIds": [
+        "ar-01",
+        "dm-03"
+      ],
+      "incompatibleWith": [],
+      "provenance": {
+        "status": "sample",
+        "source": "MVP 기능 검증용 자체 제작 가상 데이터. 게임 내 자료가 아님.",
+        "verifiedAt": null,
+        "gameVersion": null
+      }
+    }
+  ]
+}
