@@ -1,3 +1,5 @@
+import { WarfareExplorer } from './components/WarfareExplorer'
+import './components/warfare.css'
 import { useEffect, useRef, useState } from 'react'
 import { AttachmentPicker } from './components/AttachmentPicker'
 import { Icon } from './components/Icon'
@@ -9,6 +11,7 @@ import { calculateStats, compatibilityReason } from './lib/stats'
 import type { Attachment, Loadout, SlotId, Weapon } from './types'
 
 export default function App() {
+  const [view, setView] = useState<'sample' | 'warfare'>('sample')
   const [weapon, setWeapon] = useState(catalog.weapons[0])
   const [loadout, setLoadout] = useState<Loadout>({})
   const [search, setSearch] = useState('')
@@ -75,6 +78,8 @@ export default function App() {
       <div className="header-right"><span className="version-chip"><i />MVP 0.1</span><button className="data-button" onClick={() => infoDialog.current?.showModal()}><Icon name="info" size={16} /><span>데이터 안내</span></button></div>
     </header>
 
+    <nav aria-label="데이터 모드 선택" style={{display:'flex',gap:8,margin:'20px auto',padding:'0 24px',maxWidth:1500}}><button className="reset-button" aria-pressed={view==='sample'} onClick={()=>setView('sample')}>가상 샘플 작업대</button><button className="reset-button" aria-pressed={view==='warfare'} onClick={()=>setView('warfare')}>전면전 실제 자료 (부분 수집)</button></nav>
+    {view==='warfare' ? <WarfareExplorer /> : <>
     <main>
       <section className="page-intro"><div><p className="eyebrow"><span className="tiny-square" /> BUILD YOUR ADVANTAGE</p><h1>당신의 전투에 맞는 <span>한 자루.</span></h1><p className="intro-description">선택하고, 조합하고, 비교하세요. 나만의 세팅이 시작되는 곳.</p></div><div className="intro-index"><span>WORKBENCH</span><strong>01 <span>/ 01</span></strong></div></section>
 
@@ -107,6 +112,7 @@ export default function App() {
 
       <section className="roadmap"><div><span className="eyebrow">THE NEXT CHAPTER</span><h2>나만의 세팅에서, 나에게 맞는 추천까지.</h2></div><div className="roadmap-steps"><span><i className="live-dot" />개조 시뮬레이션 <b>현재</b></span><span>02 <strong>빌드 저장·비교</strong></span><span>03 <strong>플레이 스타일 추천</strong></span></div></section>
     </main>
+    </>}
 
     <footer><span><strong>DELTA LAB</strong> <span className="muted">/</span> 비공식 팬 프로젝트</span><p>Delta Force와 공식적인 제휴 관계가 없습니다.</p><span className="mono">SAMPLE DATASET · v1.0</span></footer>
     <div className={`toast ${notice ? 'visible' : ''}`} role="status" aria-live="polite">{notice && <><Icon name="check" size={16} />{notice}</>}</div>
