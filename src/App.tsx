@@ -1,5 +1,6 @@
 import { WarfareExplorer } from './components/WarfareExplorer'
 import './components/warfare.css'
+import { metadata as warfareMetadata } from './lib/warfare'
 import { useEffect, useRef, useState } from 'react'
 import { AttachmentPicker } from './components/AttachmentPicker'
 import { Icon } from './components/Icon'
@@ -114,7 +115,7 @@ export default function App() {
     </main>
     </>}
 
-    <footer><span><strong>DELTA LAB</strong> <span className="muted">/</span> 비공식 팬 프로젝트</span><p>Delta Force와 공식적인 제휴 관계가 없습니다.</p><span className="mono">SAMPLE DATASET · v1.0</span></footer>
+    <footer><span><strong>DELTA LAB</strong> <span className="muted">/</span> 비공식 팬 프로젝트</span><p>Delta Force와 공식적인 제휴 관계가 없습니다.</p><span className="mono">{view === 'sample' ? 'SAMPLE DATASET · v1.0' : `SOURCE RECORDS · ${warfareMetadata.date}`}</span></footer>
     <div className={`toast ${notice ? 'visible' : ''}`} role="status" aria-live="polite">{notice && <><Icon name="check" size={16} />{notice}</>}</div>
 
     <dialog ref={infoDialog} aria-labelledby="data-dialog-title" className="data-dialog" onClick={event => { if (event.target === event.currentTarget) infoDialog.current?.close() }}>

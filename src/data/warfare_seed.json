@@ -804,7 +804,9 @@
       "sprint_to_fire_ms": "209",
       "ads_move_mps": "2.25",
       "source_url": "https://www.aimsector.com/news/delta-force-akm-build",
-      "confirmed": "season11_stock_reference"
+      "confirmed": "season11_stock_reference",
+      "observed_at": "2026-10-23",
+      "game_verified": false
     },
     {
       "weapon": "M4A1",
@@ -821,7 +823,9 @@
       "sprint_to_fire_ms": "209",
       "ads_move_mps": "2.188",
       "source_url": "https://dfttk.com/battlefield/builder",
-      "confirmed": "S11_dfttk_default_builder_M4A1"
+      "confirmed": "S11_dfttk_default_builder_M4A1",
+      "observed_at": "2026-10-23",
+      "game_verified": false
     }
   ],
   "confirmed_akm_attachment_examples": [

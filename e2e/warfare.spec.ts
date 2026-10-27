@@ -1,0 +1,50 @@
+import { expect, test } from '@playwright/test'
+
+test.beforeEach(async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: '전면전 실제 자료 (부분 수집)', exact: true }).click()
+})
+
+test('자료 범위와 총기 기본 정보, 출처와 확인일을 표시한다', async ({ page }) => {
+  await expect(page.getByRole('heading', { name: '전면전 총기·부착물 자료', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'M4A1', exact: true })).toBeVisible()
+  await expect(page.locator('.warfare-weapon-list button')).toHaveCount(66)
+  await expect(page.locator('.warfare-specs > div').filter({ hasText: '발사 속도' })).toContainText('800')
+  await expect(page.locator('.warfare-specs > div').filter({ hasText: '피해량' })).toContainText('미확인')
+  await expect(page.getByRole('radio')).toHaveCount(9)
+  await expect(page.locator('.warfare-part').first()).toContainText('DFTTK · 자료 확인 2026-10-23')
+  await expect(page.locator('.warfare-warning')).toContainText('전체 총기·부착물 데이터베이스가 아니며')
+})
+
+test('부착물 검색과 출처 필터가 선택을 바꾸지 않고 장착·해제가 갱신된다', async ({ page }) => {
+  await page.getByRole('radio', { name: /416实用后握把/ }).check()
+  await expect(page.getByTestId('warfare-stat-handling').locator('strong')).toHaveText('60')
+  await page.getByRole('textbox', { name: '부착물 이름 또는 종류 검색' }).fill('없는 부품')
+  await expect(page.getByText('현재 필터에 맞는 부착물이 없습니다.')).toBeVisible()
+  await expect(page.getByTestId('warfare-stat-handling').locator('strong')).toHaveText('60')
+  await page.getByRole('textbox', { name: '부착물 이름 또는 종류 검색' }).fill('')
+  await page.getByRole('combobox', { name: '부착물 자료 출처' }).selectOption('Aim Sector')
+  await expect(page.getByRole('radio')).toHaveCount(0)
+  await page.getByRole('combobox', { name: '부착물 자료 출처' }).selectOption('DFTTK')
+  await expect(page.getByRole('radio', { name: /416实用后握把/ })).toBeChecked()
+  await page.getByRole('button', { name: '해당 슬롯 해제', exact: true }).click()
+  await expect(page.getByTestId('warfare-stat-handling').locator('strong')).toHaveText('58')
+})
+
+test('총기 변경과 자료가 없는 부품의 효과를 미확인으로 처리한다', async ({ page }) => {
+  await page.getByRole('textbox', { name: '총기 검색 (66종)' }).fill('AKM')
+  await page.locator('.warfare-weapon-list button').click()
+  await expect(page.getByRole('radio')).toHaveCount(16)
+  await page.getByRole('radio').first().check()
+  await expect(page.getByTestId('warfare-stat-control').locator('strong')).toHaveText('미확인')
+  await expect(page.getByTestId('warfare-stat-control')).toContainText('효과 미확인 부품 1개')
+  await page.getByRole('button', { name: '전체 파츠 해제', exact: true }).click()
+  await expect(page.getByTestId('warfare-stat-control').locator('strong')).toHaveText('39')
+  await page.getByText('정밀 보정 참고 사례 12건 · 계산에 미반영', { exact: true }).click()
+  await expect(page.getByText('출처의 특정 빌드 조정 사례이며 부착물의 기본 효과가 아닙니다. 위 합계에 더하지 않습니다.')).toBeVisible()
+  await page.getByRole('textbox', { name: '총기 검색 (66종)' }).fill('없는 총기')
+  await expect(page.getByText('검색 결과가 없습니다.')).toBeVisible()
+  await page.getByRole('button', { name: '검색 초기화', exact: true }).click()
+  await expect(page.locator('.warfare-weapon-list button')).toHaveCount(66)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
+})

@@ -1,1 +1,68 @@
-.warfare-explorer{max-width:1500px;margin:2rem auto;padding:0 20px;color:#e8f1e6}.warfare-head{display:flex;justify-content:space-between;align-items:center;gap:16px}.warfare-head h2{font-size:32px;font-weight:750}.warfare-warning{margin:15px 0;padding:14px;border:1px solid #80683f;border-radius:10px;color:#efd7ad;background:#302a20}.warfare-layout{display:grid;grid-template-columns:minmax(190px,250px) minmax(0,1fr);gap:15px;align-items:start}.warfare-card{border:1px solid #36473c;background:#162019;border-radius:12px;padding:16px;min-width:0}.warfare-card input:not([type=radio]){background:#0c1510;color:#e7f4e6;width:100%;padding:10px;border:1px solid #506653;border-radius:8px;margin:10px 0}.warfare-weapon-list{max-height:690px;overflow:auto;display:flex;flex-direction:column;gap:4px}.warfare-weapon-list button{background:transparent;color:#e9f2e6;border:1px solid transparent;text-align:left;padding:9px;border-radius:8px;display:flex;justify-content:space-between;gap:8px;cursor:pointer}.warfare-weapon-list button.selected{border-color:#b7ec75;background:#283b29}.warfare-weapon-list small{font-size:10px;color:#a8b8ab}.warfare-main h3{font-size:30px;font-weight:750}.warfare-main h4{font-size:19px;font-weight:700;margin:23px 0 12px}.warfare-main h5{font-weight:700;margin:0 0 10px}.warfare-main>p,.warfare-note{font-size:13px;color:#aebcae;line-height:1.7}.warfare-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:16px}.warfare-stats>div{padding:12px;border-radius:9px;background:#222d25;display:flex;flex-direction:column;gap:7px}.warfare-stats strong{font-size:25px;color:#b8f46b}.warfare-stats small,.warfare-stats span{font-size:11px;color:#b2c2b1}.warfare-code{background:#1f2b21;border:1px solid #374938;border-radius:8px;padding:10px;margin:8px 0;display:grid;grid-template-columns:1fr auto;gap:8px}.warfare-code span{grid-column:1/-1;color:#aebcae;font-size:12px}.warfare-code code{overflow-wrap:anywhere;font-size:12px}.warfare-code button,.warfare-clear{border:1px solid #8cae71;color:#dff8ce;border-radius:6px;background:#293c2a;padding:7px 12px;cursor:pointer}.warfare-clear:disabled{opacity:.4;cursor:default}.warfare-slot{border:1px solid #344638;padding:12px;border-radius:10px;margin:10px 0}.warfare-part{display:flex;align-items:flex-start;gap:10px;padding:10px;margin-bottom:7px;border-radius:8px;border:1px solid #384838;cursor:pointer}.warfare-part:has(input:checked){border-color:#b8f46b;background:#243327}.warfare-part input{margin-top:5px;accent-color:#b8f46b}.warfare-part span{display:flex;flex-direction:column;gap:5px}.warfare-part strong{font-size:14px}.warfare-part small{color:#abb9a9;font-size:11px}.warfare-part em{font-style:normal;font-size:12px;color:#b8f46b}.warfare-note a{color:#b8f46b;text-decoration:underline}@media(max-width:850px){.warfare-layout{grid-template-columns:1fr}.warfare-weapon-list{max-height:220px}.warfare-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.warfare-explorer { max-width:1500px; margin:2rem auto; padding:0 24px; color:#e8f1e6; }
+.warfare-head { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+.warfare-head h1 { font-size:30px; font-weight:650; margin-top:8px; letter-spacing:-1px; }
+.warfare-warning { margin:20px 0; padding:15px 18px; border:1px solid #675d3d; border-radius:6px; color:#d4c8a4; background:#27271d; font-size:12px; line-height:1.9; }
+.warfare-coverage { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:20px; }
+.warfare-coverage>div { display:flex; flex-direction:column; gap:8px; padding:18px; border:1px solid #35432f; background:#1b251a; border-radius:6px; }
+.warfare-coverage strong { font:25px monospace; color:#b8f46b; }
+.warfare-coverage span { font-size:11px; color:#a2b399; }
+.warfare-layout { display:grid; grid-template-columns:minmax(190px,250px) minmax(0,1fr); gap:16px; align-items:start; }
+.warfare-card { border:1px solid #344232; background:#161f18; border-radius:7px; padding:20px; min-width:0; }
+.warfare-card>label { font-size:12px; color:#c2d1b7; }
+.warfare-card input:not([type=radio]), .warfare-filters select { background:#10180f; color:#e0ecd8; width:100%; padding:10px; border:1px solid #3e5138; border-radius:4px; margin:10px 0; font-size:12px; min-width:0; }
+.warfare-weapon-list { max-height:720px; overflow:auto; display:flex; flex-direction:column; gap:5px; scrollbar-color:#526c42 #172116; }
+.warfare-weapon-list button { background:transparent; color:#dbe6d5; border:1px solid transparent; text-align:left; padding:10px 8px; border-radius:4px; display:flex; justify-content:space-between; align-items:center; gap:8px; cursor:pointer; font-size:12px; }
+.warfare-weapon-list button:hover { background:#253120; }
+.warfare-weapon-list button.selected { border-color:#a5c77a; background:#2b3b23; }
+.warfare-weapon-list small { font-size:9px; color:#9db18d; white-space:nowrap; }
+.warfare-title { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom:24px; }
+.warfare-title h2 { font-size:32px; font-weight:650; margin-top:8px; }
+.warfare-main section>h3, .warfare-section-title h3 { font-size:15px; font-weight:600; margin:23px 0 14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.warfare-main h4 { font-size:13px; font-weight:600; }
+.warfare-specs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1px; background:#344331; border:1px solid #344331; border-radius:5px; overflow:hidden; margin-bottom:10px; }
+.warfare-specs>div { padding:14px; background:#1c291c; min-width:0; }
+.warfare-specs dt { color:#9fb295; font-size:10px; line-height:1.7; }
+.warfare-specs dd { color:#e0edda; font-size:18px; margin:8px 0 0; font-family:monospace; }
+.warfare-specs dd small { font-size:10px; color:#9cb08d; font-family:var(--font-sans); }
+.warfare-note { font-size:11px; color:#94a98a; line-height:1.9; margin:10px 0; }
+.warfare-note strong { font-weight:500; color:#d4e8c7; }
+.warfare-source { display:inline-block; font-size:10px; color:#b2cb9d; text-decoration:underline; text-underline-offset:3px; line-height:1.9; }
+.warfare-stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:16px; }
+.warfare-stats>div { padding:14px; border-radius:5px; background:#243221; display:flex; flex-direction:column; gap:8px; }
+.warfare-stats strong { font-size:25px; color:#b8f46b; font-weight:500; }
+.warfare-stats small, .warfare-stats span { font-size:10px; color:#acbda1; line-height:1.7; }
+.warfare-stats .warfare-unknown { color:#dfbf8b; }
+.warfare-section-title { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; }
+.warfare-clear, .warfare-code button { border:1px solid #637f4e; color:#c6e8aa; border-radius:4px; background:#293a22; padding:7px 10px; font-size:10px; cursor:pointer; }
+.warfare-clear:not(:disabled):hover, .warfare-code button:hover { border-color:#b8f46b; background:#354d2b; }
+.warfare-clear:disabled { opacity:.4; cursor:default; }
+.warfare-filters { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr); gap:10px; margin:8px 0; }
+.warfare-filters label { font-size:10px; color:#9db590; min-width:0; }
+.warfare-filters select { cursor:pointer; height:39px; }
+.warfare-filters input { height:39px; }
+.warfare-slot { border:1px solid #344831; padding:14px; border-radius:6px; margin:14px 0; }
+.warfare-slot>.warfare-section-title { margin-bottom:14px; }
+.warfare-part { display:block; margin-bottom:9px; border-radius:5px; border:1px solid #34452f; background:#182417; padding:13px; min-width:0; overflow-wrap:anywhere; }
+.warfare-part.is-selected { border-color:#a9d47a; background:#273a20; }
+.warfare-part-choice { display:flex; align-items:flex-start; gap:10px; cursor:pointer; }
+.warfare-part-choice input { margin-top:4px; accent-color:#b8f46b; flex-shrink:0; }
+.warfare-part-choice span { display:flex; flex-direction:column; gap:6px; min-width:0; }
+.warfare-part-choice strong { font-size:13px; font-weight:550; }
+.warfare-part-choice small { color:#8ea780; font-size:9px; }
+.warfare-part-details { padding-left:23px; }
+.warfare-part-details p { margin-top:9px; font-size:11px; line-height:1.8; color:#a9baa0; }
+.warfare-deltas { display:flex; gap:6px 15px; flex-wrap:wrap; font-size:10px; margin:9px 0; }
+.warfare-empty { border:1px dashed #465e38; padding:22px; text-align:center; font-size:12px; line-height:1.9; color:#9db78e; border-radius:5px; margin-top:14px; }
+.warfare-reference { margin-top:20px; padding:15px 0; border-top:1px solid #35472f; }
+.warfare-reference summary { cursor:pointer; color:#c1d9b0; font-size:13px; line-height:1.9; }
+.warfare-reference summary:hover { color:#b8f46b; }
+.warfare-reference>div:not(.warfare-code) { display:flex; flex-wrap:wrap; align-items:center; gap:6px 15px; padding:10px 0; border-bottom:1px solid #293a23; font-size:11px; line-height:1.8; }
+.warfare-reference>div>strong { color:#beceaf; font-weight:500; }
+.warfare-reference>div>a, .warfare-note a { color:#b8f46b; text-decoration:underline; text-underline-offset:3px; }
+.warfare-code { background:#1f2e1d; border:1px solid #394e31; border-radius:5px; padding:12px; margin:10px 0; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; }
+.warfare-code span { grid-column:1/-1; color:#a8be9a; font-size:11px; }
+.warfare-code code { overflow-wrap:anywhere; font-size:11px; line-height:1.8; }
+.warfare-footer-note { margin-top:20px; font-size:10px; }
+@media(max-width:1050px) { .warfare-specs { grid-template-columns:repeat(3,minmax(0,1fr)); } .warfare-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:850px) { .warfare-layout { grid-template-columns:1fr; } .warfare-weapon-list { max-height:240px; } .warfare-coverage { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:550px) { .warfare-explorer { padding:0 16px; } .warfare-head h1 { font-size:24px; } .warfare-warning { font-size:10px; padding:12px; } .warfare-card { padding:15px; } .warfare-coverage>div { padding:14px; } .warfare-coverage span { font-size:9px; line-height:1.8; } .warfare-specs { grid-template-columns:repeat(2,minmax(0,1fr)); } .warfare-filters { grid-template-columns:1fr 1fr; } .warfare-filters>label:first-child { grid-column:1/-1; } .warfare-part { padding:11px; } .warfare-part-details { padding-left:0; } .warfare-specs dd { font-size:17px; } }
