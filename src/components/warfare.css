@@ -63,6 +63,21 @@
 .warfare-code span { grid-column:1/-1; color:#a8be9a; font-size:11px; }
 .warfare-code code { overflow-wrap:anywhere; font-size:11px; line-height:1.8; }
 .warfare-footer-note { margin-top:20px; font-size:10px; }
+.warfare-evidence { display:block; color:#8aa47d; font-size:9px; line-height:1.8; margin-top:7px; }
+.warfare-compatibility-note { color:#d9bb8e; font-size:10px; line-height:1.8; margin:8px 0; }
+.warfare-part:has(input:disabled) { border-style:dashed; }
+.warfare-part-choice:has(input:disabled) { cursor:not-allowed; color:#8d9f85; }
+.warfare-selected { border-top:1px solid #35472f; margin-top:20px; }
+.warfare-selected ul { list-style:none; padding:0; margin:0; }
+.warfare-selected li { border:1px solid #3c5431; border-radius:5px; background:#202f1c; padding:12px; margin:9px 0; }
+.warfare-selected .warfare-section-title strong { display:block; font-size:12px; font-weight:500; margin-top:5px; }
+.warfare-selected .warfare-section-title small { font-size:9px; color:#a2bf8d; }
+.warfare-recommendation { border-top:1px solid #35472f; margin-top:20px; padding-top:3px; }
+.warfare-recommendation>label { display:block; font-size:11px; color:#adbf9f; margin-bottom:8px; }
+.warfare-recommendation>select { background:#182315; border:1px solid #526f3f; color:#d5eac5; padding:10px; border-radius:4px; font-size:12px; max-width:100%; }
+.warfare-recommendation .warfare-deltas { margin-top:14px; color:#bcda9f; }
+.warfare-recommendation .warfare-empty { text-align:left; font-size:11px; }
+.warfare-recommendation .warfare-empty ul { padding-left:18px; margin:10px 0; list-style:disc; }
 @media(max-width:1050px) { .warfare-specs { grid-template-columns:repeat(3,minmax(0,1fr)); } .warfare-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:850px) { .warfare-layout { grid-template-columns:1fr; } .warfare-weapon-list { max-height:240px; } .warfare-coverage { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:550px) { .warfare-explorer { padding:0 16px; } .warfare-head h1 { font-size:24px; } .warfare-warning { font-size:10px; padding:12px; } .warfare-card { padding:15px; } .warfare-coverage>div { padding:14px; } .warfare-coverage span { font-size:9px; line-height:1.8; } .warfare-specs { grid-template-columns:repeat(2,minmax(0,1fr)); } .warfare-filters { grid-template-columns:1fr 1fr; } .warfare-filters>label:first-child { grid-column:1/-1; } .warfare-part { padding:11px; } .warfare-part-details { padding-left:0; } .warfare-specs dd { font-size:17px; } }
