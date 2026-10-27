@@ -5,7 +5,7 @@ export { calculateWarfare as calculate } from './warfare-calculator'
 export { warfareStatKeys as statKeys } from '../types/warfare'
 export type { Evidence, WarfarePart as Part, WarfareWeapon as Weapon, Calibration, WarfareStat as Stat } from '../types/warfare'
 
-/** Compatibility facade for existing components; raw JSON remains unchanged. */
+/** Compatibility facade for components; datasets are normalized separately. */
 export const weapons = warfareCatalog.weapons
 export const statNames = { control: '반동 제어', handling: '조작 속도', stability: '안정성', accuracy: '지향 정밀도' }
 export const slotNames: Record<string, string> = {
@@ -25,6 +25,7 @@ export const specDefinitions = [
 export const metadata = {
   mode: 'Warfare', date: seed.manifest.as_of, season: seed.manifest.season, complete: false,
   weaponCount: weapons.length, baseCount: weapons.filter(weapon => weapon.base).length,
-  dfttkPartCount: warfareCatalog.attachments.filter(part => part.evidence.sourceName === 'DFTTK').length,
-  observedWeaponCount: weapons.filter(weapon => weapon.parts.some(part => part.evidence.sourceName === 'DFTTK')).length,
+  attachmentRecordCount: warfareCatalog.attachments.length,
+  sourceNames: [...new Set(warfareCatalog.attachments.map(part => part.evidence.sourceName))],
+  observedWeaponCount: weapons.filter(weapon => weapon.parts.length > 0).length,
 }

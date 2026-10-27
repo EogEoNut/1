@@ -4,6 +4,7 @@ import type { Evidence, Part } from '../lib/warfare'
 import { assessAttachmentChange, assessLoadout, removeAttachmentCascade } from '../lib/compatibility'
 import { WarfareLoadoutPanel } from './WarfareLoadoutPanel'
 import { WarfareRecommendation } from './WarfareRecommendation'
+import { WeaponImage } from './WeaponImage'
 
 function SourceLink({ evidence }: { evidence: Evidence }) {
   if (!evidence.sourceUrl) return <span className="warfare-source">출처 미확인</span>
@@ -68,13 +69,13 @@ export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: b
   const Root = embedded ? 'section' : 'main'
   const Heading = embedded ? 'h3' : 'h1'
   return <Root id={embedded ? undefined : 'warfare-catalog'} className={`warfare-explorer ${embedded ? 'warfare-embedded' : ''}`} aria-label={embedded ? '전면전 총기 개조' : '전면전 총기 자료'}>
-    <div className="warfare-head"><div><p className="eyebrow">WARFARE / SOURCE CATALOG</p><Heading>전면전 총기·부착물 자료</Heading></div><span className="sample-badge">사이트 관측 · 게임 내 미검증</span></div>
-    <p className="warfare-warning">{metadata.season} · 자료 확인 {metadata.date}. DFTTK 편집기 관측 기록과 Aim Sector 공개 빌드 예시를 구분해 제공합니다. 전체 총기·부착물 데이터베이스가 아니며, 기록이 없다는 이유로 장착 불가를 뜻하지 않습니다.</p>
+    {!embedded && <><div className="warfare-head"><div><p className="eyebrow">WARFARE / SOURCE CATALOG</p><Heading>전면전 총기·부착물 자료</Heading></div><span className="sample-badge">사이트 관측 · 게임 내 미검증</span></div>
+    <p className="warfare-warning">{metadata.season} · 자료 확인 {metadata.date}. Aim Sector 기존 공개 빌드 자료입니다. 전체 총기·부착물 데이터베이스가 아니며, 미수집 수치와 부품은 미확인으로 유지합니다. 이후 직접 등록할 자료로 확장할 수 있습니다.</p></>}
     {!embedded && <div className="warfare-coverage" aria-label="자료 수록 현황">
       <div><strong>{metadata.weaponCount}</strong><span>총기 이름 목록</span></div>
       <div><strong>{metadata.baseCount}</strong><span>기본 정보 수록 총기</span></div>
-      <div><strong>{metadata.dfttkPartCount}</strong><span>DFTTK 부착물 기록</span></div>
-      <div><strong>{metadata.observedWeaponCount}</strong><span>DFTTK 장착 목록 관측 총기</span></div>
+      <div><strong>{metadata.attachmentRecordCount}</strong><span>기존 부착물 기록</span></div>
+      <div><strong>{metadata.observedWeaponCount}</strong><span>부착물 기록이 있는 총기</span></div>
     </div>}
 
     <div className="warfare-layout">{!embedded && <aside className="warfare-card">
@@ -89,6 +90,8 @@ export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: b
 
     <div className="warfare-card warfare-main">
       <div className="warfare-title"><div><p className="eyebrow">WEAPON RECORD</p><h2>{weapon.name}</h2><p className="warfare-note">분류: {weapon.category ?? '미확인'} · 게임 버전: {weapon.evidence.gameVersion ?? '미확인'}</p></div><span className="count-badge">{weapon.parts.length}개 관측 파츠</span></div>
+      <WeaponImage id={weapon.id} name={weapon.name} category={weapon.category} />
+      {embedded && <p className="warfare-note">Aim Sector 기존 부분 자료 · 자료 확인 {metadata.date} · 게임 내 미검증. 미수집 수치와 부착물은 직접 자료를 등록하기 전까지 미확인으로 표시합니다.</p>}
       <section aria-label="총기 기본 정보"><h3>총기 기본 정보</h3>
         <dl className="warfare-specs">{specDefinitions.map(spec => <div key={spec.key}><dt>{spec.label}</dt><dd>{weapon.base?.[spec.key] ?? '미확인'} {weapon.base?.[spec.key] !== null && weapon.base?.[spec.key] !== undefined && <small>{spec.unit}</small>}</dd></div>)}</dl>
         {weapon.baseEvidence ? <SourceLink evidence={weapon.baseEvidence} /> : <p className="warfare-note">해당 총기의 기본 수치는 아직 수록하지 않았습니다.</p>}
@@ -103,7 +106,7 @@ export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: b
       <WarfareLoadoutPanel weapon={weapon} selection={selection} stats={stats} onRemove={slot => setSelection(old => removeAttachmentCascade(weapon, old, slot))} />
 
       <section aria-label="부착물 목록"><div className="warfare-section-title"><h3>부착물 종류·정보</h3><button className="warfare-clear" disabled={!selectedCount} onClick={() => setSelection({})}>전체 파츠 해제</button></div>
-        <div className="warfare-filters"><label>부착물 검색<input aria-label="부착물 이름 또는 종류 검색" placeholder="부착물 이름 또는 슬롯" value={partQuery} onChange={event => setPartQuery(event.target.value)} /></label><label>자료 출처<select aria-label="부착물 자료 출처" value={source} onChange={event => setSource(event.target.value)}>{['전체', 'DFTTK', 'Aim Sector'].map(value => <option key={value}>{value}</option>)}</select></label><label>슬롯 종류<select aria-label="부착물 슬롯 종류" value={slotFilter} onChange={event => setSlotFilter(event.target.value)}><option value="전체">전체</option>{supportedSlots.map(slot => <option key={slot} value={slot}>{slotNames[slot] ?? slot}</option>)}</select></label></div>
+        <div className="warfare-filters"><label>부착물 검색<input aria-label="부착물 이름 또는 종류 검색" placeholder="부착물 이름 또는 슬롯" value={partQuery} onChange={event => setPartQuery(event.target.value)} /></label><label>자료 출처<select aria-label="부착물 자료 출처" value={source} onChange={event => setSource(event.target.value)}>{['전체', ...metadata.sourceNames].map(value => <option key={value}>{value}</option>)}</select></label><label>슬롯 종류<select aria-label="부착물 슬롯 종류" value={slotFilter} onChange={event => setSlotFilter(event.target.value)}><option value="전체">전체</option>{supportedSlots.map(slot => <option key={slot} value={slot}>{slotNames[slot] ?? slot}</option>)}</select></label></div>
         <p className="warfare-note">{visibleParts.length} / {weapon.parts.length}개 표시 · 필터는 선택을 해제하지 않습니다. 이름은 출처 원문을 유지하며 공식 한국어 명칭으로 간주하지 않습니다.</p>
         {slots.map(slot => <section className="warfare-slot" key={slot} aria-label={`${slotNames[slot] ?? slot} 목록`}><div className="warfare-section-title"><h4>{slotNames[slot] ?? slot}</h4><button className="warfare-clear" disabled={!selection[slot]} onClick={() => setSelection(old => removeAttachmentCascade(weapon, old, slot))}>해당 슬롯 해제</button></div>
           {visibleParts.filter(part => part.slot === slot).map(part => {
@@ -123,6 +126,6 @@ export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: b
       <p className="warfare-note" role="status">{notice}</p>
       <WarfareRecommendation weapon={weapon} />
     </div></div>
-    <p className="warfare-note warfare-footer-note">자료 출처: <a href="https://dfttk.com/battlefield/builder" target="_blank" rel="noreferrer">DFTTK 전면전 편집기</a> · <a href="https://www.aimsector.com/news/delta-force-loadouts" target="_blank" rel="noreferrer">Aim Sector</a>. 수록 범위와 확인일은 위에 표시합니다. 자료 미확인과 게임 내 미검증을 구분해 확인하세요.</p>
+    <p className="warfare-note warfare-footer-note">기존 자료 출처: <a href="https://www.aimsector.com/news/delta-force-loadouts" target="_blank" rel="noreferrer">Aim Sector</a>. 수록 범위와 확인일은 위에 표시합니다. 새로운 자료와 이미지는 나중에 직접 등록할 수 있습니다.</p>
   </Root>
 }

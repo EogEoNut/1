@@ -5,6 +5,7 @@ import { assessAttachmentChange, assessLoadout, removeAttachmentCascade } from '
 import { calculateWarfare } from './warfare-calculator'
 import { recommendationReadiness, scoreVerifiedMetrics } from './recommendation'
 import type { Evidence, WarfareCatalog, WarfareWeapon } from '../types/warfare'
+import { mathFixture } from './test-fixtures/warfare'
 
 const m4 = warfareCatalog.weapons.find(item => item.name === 'M4A1')!
 const akm = warfareCatalog.weapons.find(item => item.name === 'AKM')!
@@ -17,7 +18,7 @@ const load = (...parts: typeof akm.parts) => Object.fromEntries(parts.map(part =
 
 describe('검증 상태와 원자료 정규화', () => {
   it('로컬 ID와 미확인 슬롯/기본 부품을 사이트 ID로 가장하지 않는다', () => {
-    expect(warfareCatalog.attachments).toHaveLength(25)
+    expect(warfareCatalog.attachments).toHaveLength(16)
     for (const weapon of warfareCatalog.weapons) {
       expect(weapon.sourceId).toBeNull()
       expect(weapon.evidence.status).toBe('observed')
@@ -78,7 +79,7 @@ describe('전면전 참조 무결성 검사', () => {
 
 describe('보수적 호환성 검사', () => {
   it('같은 슬롯의 부품은 교체하며 기존 부품과 중복으로 보지 않는다', () => {
-    expect(assessAttachmentChange(m4, load(m4.parts[0]), m4.parts[1]).status).toBe('allowed')
+    expect(assessAttachmentChange(akm, load(standardStock), hipfireStock).status).toBe('allowed')
   })
   it('같은 공개 빌드 관측은 허용하되 다른 빌드 혼합은 미확인으로 구분한다', () => {
     expect(assessLoadout(akm, load(foregrip, standardStock))).toMatchObject({ status: 'allowed', evidenceStatus: 'observed' })
@@ -106,24 +107,24 @@ describe('보수적 호환성 검사', () => {
   })
   it('해당 총기 기록에 없는 부품은 장착 불가라고 단정하지 않는다', () => {
     expect(assessLoadout(m4, { muzzle: foregrip.id })).toMatchObject({ status: 'unknown' })
-    expect(assessLoadout(m4, { muzzle: m4.parts[0].id }).status).toBe('blocked')
+    expect(assessLoadout(akm, { muzzle: foregrip.id }).status).toBe('blocked')
     expect(assessLoadout(m4, {}).evidenceStatus).toBe('observed')
   })
 })
 
 describe('참고 계산과 기여도', () => {
   it('변화량 0과 미확인을 구분하며 계산 방법을 표시한다', () => {
-    const part = m4.parts.find(item => item.name === '416实用后握把')!
-    const result = calculateWarfare(m4, load(part))
-    expect(result.control).toMatchObject({ method: 'reference-additive', status: 'observed', final: 41, delta: 0 })
+    const fixture = mathFixture()
+    const result = calculateWarfare(fixture, load(fixture.parts[0]))
+    expect(result.control).toMatchObject({ method: 'reference-additive', status: 'observed', final: 20, delta: 0 })
     expect(result.control.contributions[0].amount).toBe(0)
     expect(calculateWarfare(akm, load(foregrip)).control.contributions[0].amount).toBeNull()
   })
   it('미확인 기본값 출처와 큰 막대 값을 가상의 게임 공식으로 보정하지 않는다', () => {
-    const weapon: WarfareWeapon = structuredClone(m4)
+    const weapon: WarfareWeapon = mathFixture()
     weapon.base!.control = 99
-    const part = weapon.parts.find(item => item.name === 'AR MOE后握把')!
-    expect(calculateWarfare(weapon, load(part)).control.final).toBe(102)
+    const part = weapon.parts[1]
+    expect(calculateWarfare(weapon, load(part)).control.final).toBe(104)
     weapon.baseEvidence = { ...weapon.baseEvidence!, status: 'unknown', gameVerified: false, verifiedAt: null } as Evidence
     expect(calculateWarfare(weapon, load(part)).control.final).toBeNull()
   })

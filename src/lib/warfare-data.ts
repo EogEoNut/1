@@ -1,6 +1,5 @@
 import seed from '../data/warfare_seed.json'
-import grips from '../data/dfttk_grips.json'
-import { baseStatKeys, warfareStatKeys } from '../types/warfare'
+import { baseStatKeys } from '../types/warfare'
 import type { Evidence, WarfareCatalog, WarfarePart, WarfareWeapon } from '../types/warfare'
 import { validateWarfareCatalog } from './warfare-validation'
 
@@ -23,25 +22,6 @@ function associate(name: string, part: WarfarePart) {
   if (byWeapon.get(name)!.has(part.id)) throw new Error(`중복 관측 참조: ${name}/${part.id}`)
   byWeapon.get(name)!.add(part.id)
   part.observedWeaponIds.push(localWeaponId(name))
-}
-for (const raw of grips.attachments) {
-  if (raw.mode !== 'Warfare') continue
-  if (parts.has(raw.id)) throw new Error(`부착물 ID 중복: ${raw.id}`)
-  const deltas: WarfarePart['deltas'] = {}
-  for (const key of warfareStatKeys) deltas[key] = parseObservedNumber(raw.displayed_deltas[key])
-  parts.set(raw.id, {
-    id: raw.id, sourceId: null, dataset: 'warfare', mode: 'Warfare',
-    name: raw.name_cn, slot: raw.slot, observedWeaponIds: [], deltas,
-    source: 'DFTTK 전면전 편집기', note: '해당 총기 편집기의 슬롯 목록에서 관측 · 게임 내 미검증', tunable: null,
-    evidence: observed(raw.provenance.source, 'DFTTK', 'site-listed', raw.provenance.observed_at, raw.provenance.data_revision),
-  })
-}
-for (const row of grips.weapon_attachment_observations) {
-  const part = parts.get(row.attachment_id)
-  if (!part || part.slot !== row.slot) throw new Error(`잘못된 DFTTK 관측 참조: ${row.attachment_id}`)
-  const raw = grips.attachments.find(item => item.id === row.attachment_id)!
-  if (raw.observed_weapon !== row.weapon) throw new Error(`DFTTK 관측 맥락과 총기가 일치하지 않습니다: ${row.attachment_id}`)
-  associate(row.weapon, part)
 }
 const akmRows = seed.confirmed_akm_attachment_examples.filter(row => row.mode === 'Warfare')
 for (const [index, raw] of akmRows.entries()) {
@@ -71,7 +51,7 @@ const weapons: WarfareWeapon[] = seed.weapons.map(name => {
     category: categories.length === 1 ? categories[0] : null,
     evidence: observed('https://www.aimsector.com/news/delta-force-loadouts', 'Aim Sector', 'site-listed'),
     base: base ? Object.fromEntries(baseStatKeys.map(key => [key, parseObservedNumber(base[key as keyof typeof base])])) as WarfareWeapon['base'] : null,
-    baseEvidence: base ? observed(base.source_url, base.source_url.includes('dfttk.com') ? 'DFTTK' : 'Aim Sector', 'site-base', base.observed_at) : null,
+    baseEvidence: base ? observed(base.source_url, 'Aim Sector', 'site-base', base.observed_at) : null,
     slots: [...new Set(members.map(part => part.slot))].map(slot => ({
       id: slot, defaultAttachmentId: null, defaultStatus: 'unknown',
       evidence: members.find(part => part.slot === slot)!.evidence,

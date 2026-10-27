@@ -2,11 +2,11 @@ import { useId } from 'react'
 import type { Weapon } from '../types'
 
 // Original schematic illustration. It is not a depiction of an actual game asset.
-export function WeaponArt({ variant, compact = false, hasOptic = false }: { variant: Weapon['silhouette']; compact?: boolean; hasOptic?: boolean }) {
+export function WeaponArt({ variant, compact = false, hasOptic = false, label = '샘플 총기 가상 도식. 실제 게임 모델이 아닙니다.' }: { variant: Weapon['silhouette']; compact?: boolean; hasOptic?: boolean; label?: string }) {
   const id = useId().replace(/:/g, '')
   const isSmg = variant === 'smg'
   const isDmr = variant === 'dmr'
-  return <svg className={`weapon-art ${compact ? 'compact-art' : ''}`} viewBox="0 0 720 280" role="img" aria-label="샘플 총기 가상 도식. 실제 게임 모델이 아닙니다.">
+  return <svg className={`weapon-art ${compact ? 'compact-art' : ''}`} viewBox="0 0 720 280" role="img" aria-label={label}>
     <defs>
       <linearGradient id={id} x1="0" y1="0" x2="0" y2="1"><stop stopColor="#71817c" /><stop offset=".48" stopColor="#3b4944" /><stop offset="1" stopColor="#202d28" /></linearGradient>
     </defs>

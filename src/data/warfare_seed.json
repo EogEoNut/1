@@ -6,13 +6,11 @@
     "mode": "Warfare only",
     "weapon_loadout_codes": 70,
     "unique_weapons_in_aimsector": 66,
-    "verified_base_stat_records": 2,
+    "verified_base_stat_records": 1,
     "akm_compatible_attachment_records": 16,
-    "dfttk_visible_grips": 9,
     "complete_compatible_parts_database": false,
     "complete_per_attachment_numeric_stats": false,
     "sources": [
-      "https://dfttk.com/battlefield/builder",
       "https://www.aimsector.com/news/delta-force-loadouts",
       "https://www.aimsector.com/news/delta-force-akm-build"
     ],
@@ -807,25 +805,6 @@
       "confirmed": "season11_stock_reference",
       "observed_at": "2026-10-23",
       "game_verified": false
-    },
-    {
-      "weapon": "M4A1",
-      "mode": "Warfare",
-      "damage": "",
-      "range_m": "25",
-      "control": "41",
-      "handling": "58",
-      "stability": "55",
-      "accuracy": "55",
-      "rpm": "800",
-      "capacity": "30",
-      "ads_ms": "302",
-      "sprint_to_fire_ms": "209",
-      "ads_move_mps": "2.188",
-      "source_url": "https://dfttk.com/battlefield/builder",
-      "confirmed": "S11_dfttk_default_builder_M4A1",
-      "observed_at": "2026-10-23",
-      "game_verified": false
     }
   ],
   "confirmed_akm_attachment_examples": [
@@ -1126,107 +1105,6 @@
       "delta": "-4",
       "kind": "calibration_tuning_not_base_effect",
       "source_url": "https://www.aimsector.com/news/delta-force-akm-build"
-    }
-  ],
-  "dfttk_visible_grips_unverified_compatibility": [
-    {
-      "name_cn": "416实用后握把",
-      "slot": "rear_grip",
-      "mode": "Warfare",
-      "control_delta": "0",
-      "handling_delta": "2",
-      "stability_delta": "2",
-      "accuracy_delta": "0",
-      "display_context": "builder initially shows M4A1; individual compatibility not separately verified",
-      "source_url": "https://dfttk.com/battlefield/builder"
-    },
-    {
-      "name_cn": "M7稳定后握把",
-      "slot": "rear_grip",
-      "mode": "Warfare",
-      "control_delta": "3",
-      "handling_delta": "1",
-      "stability_delta": "0",
-      "accuracy_delta": "0",
-      "display_context": "builder initially shows M4A1; individual compatibility not separately verified",
-      "source_url": "https://dfttk.com/battlefield/builder"
-    },
-    {
-      "name_cn": "幻影后握把",
-      "slot": "rear_grip",
-      "mode": "Warfare",
-      "control_delta": "3",
-      "handling_delta": "7",
-      "stability_delta": "-4",
-      "accuracy_delta": "0",
-      "display_context": "builder initially shows M4A1; individual compatibility not separately verified",
-      "source_url": "https://dfttk.com/battlefield/builder"
-    },
-    {
-      "name_cn": "侵袭后握把",
-      "slot": "rear_grip",
-      "mode": "Warfare",
-      "control_delta": "3",
-      "handling_delta": "3",
-      "stability_delta": "0",
-      "accuracy_delta": "0",
-      "display_context": "builder initially shows M4A1; individual compatibility not separately verified",
-      "source_url": "https://dfttk.com/battlefield/builder"
-    },
-    {
-      "name_cn": "飓风D-1后握把",
-      "slot": "rear_grip",
-      "mode": "Warfare",
-      "control_delta": "0",
-      "handling_delta": "4",
-      "stability_delta": "0",
-      "accuracy_delta": "0",
-      "display_context": "builder initially shows M4A1; individual compatibility not separately verified",
-      "source_url": "https://dfttk.com/battlefield/builder"
-    },
-    {
-      "name_cn": "射手D-2后握把",
-      "slot": "rear_grip",
-      "mode": "Warfare",
-      "control_delta": "0",
-      "handling_delta": "0",
-      "stability_delta": "4",
-      "accuracy_delta": "0",
-      "display_context": "builder initially shows M4A1; individual compatibility not separately verified",
-      "source_url": "https://dfttk.com/battlefield/builder"
-    },
-    {
-      "name_cn": "AR重塔握把",
-      "slot": "rear_grip",
-      "mode": "Warfare",
-      "control_delta": "1",
-      "handling_delta": "1",
-      "stability_delta": "1",
-      "accuracy_delta": "4",
-      "display_context": "builder initially shows M4A1; individual compatibility not separately verified",
-      "source_url": "https://dfttk.com/battlefield/builder"
-    },
-    {
-      "name_cn": "AR MOE后握把",
-      "slot": "rear_grip",
-      "mode": "Warfare",
-      "control_delta": "3",
-      "handling_delta": "0",
-      "stability_delta": "3",
-      "accuracy_delta": "0",
-      "display_context": "builder initially shows M4A1; individual compatibility not separately verified",
-      "source_url": "https://dfttk.com/battlefield/builder"
-    },
-    {
-      "name_cn": "模块化AR后握把",
-      "slot": "rear_grip",
-      "mode": "Warfare",
-      "control_delta": "2",
-      "handling_delta": "2",
-      "stability_delta": "0",
-      "accuracy_delta": "0",
-      "display_context": "builder initially shows M4A1; individual compatibility not separately verified",
-      "source_url": "https://dfttk.com/battlefield/builder"
     }
   ]
 }
