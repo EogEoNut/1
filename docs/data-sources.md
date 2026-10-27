@@ -31,3 +31,13 @@
 출처: [DFTTK](https://dfttk.com/battlefield/builder), [DFTTK 공개 계약](https://dfttk.com/ai/context.json), [Aim Sector 전면전 목록](https://www.aimsector.com/news/delta-force-loadouts), [AKM 예시](https://www.aimsector.com/news/delta-force-akm-build).
 
 이번 조사에서 코드·전체 데이터의 재배포 라이선스는 확인하지 못했다. 자동 수집/상시 호출은 추가하지 않는다. 자료 확장 전 제공자에게 허용 범위·출처 표기·버전 배포 조건을 확인하고, 기본 파츠·슬롯 트리·충돌·종속·세부 단위·게임 내 검증 증거를 확보해야 한다. 외부 페이지의 동적 상태를 고정된 전체 호환성 데이터라고 추정하지 않는다.
+
+## 구현한 모델과 검사
+
+`src/types/warfare.ts`의 모델을 `warfare-data.ts`에서 기존 JSON으로 생성한다. 중복 `weapons.json`/`attachments.json`은 만들지 않았다. 기존 `warfare.ts`의 공개 이름은 호환 진입점으로 유지한다. `verified` 출처는 게임 검증일·게임 버전·게임 테스트 근거가 필요하며 웹사이트 관측만으로 상태를 승격하지 않는다.
+
+`sourceId:null`은 사이트 고유 ID가 미확인이라는 뜻이다. 기존 `warfare:이름`, `dfttk:...`, `akm:...`는 DELTA LAB 로컬 ID다. 슬롯의 `defaultStatus:unknown`과 `defaultAttachmentId:null`은 기본 부품을 모른다는 뜻이며, 기본 부품이 없다고 확정한 값이 아니다. 정밀 보정 가능 여부도 `tunable:null`을 유지한다.
+
+공개 예시의 `confirmed_in_build`가 같으면 같은 구성에서 함께 등장한 관측 그룹으로 정규화한다. 이는 원자료에 있던 `standard/hipfire`의 관계를 읽는 것이며 새로운 호환 규칙을 추정한 것이 아니다. 그룹 밖 혼합은 미확인으로 보류한다. 명시 배제·종속 규칙을 처리할 수 있지만 현재 실제 규칙 배열은 비어 있다. 배제·종속 테스트용 규칙은 테스트 메모리에서만 생성하고 원자료에 넣지 않는다.
+
+추천의 `delta-lab-weights-v1`은 4개 막대 지표의 10점, 사거리 10m, 조준 이동 속도 1m/s를 **자체 평가 기준 구간**으로 사용한다. 게임의 최대값이나 보정 공식이 아니다. 가중 변화의 기준점은 50점이며 0~100으로 평가한다. 관측/미확인 값은 점수 입력으로 받지 않으며, 현재는 검증된 게임 계산 전략도 없어 실제 추천과 점수를 내보내지 않는다.

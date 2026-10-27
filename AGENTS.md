@@ -8,3 +8,5 @@
 - 변경에 맞춰 `npm run build`, `npm test`를 실행한다. 주요 UI 변경은 `npm run build` 후 `npm run test:e2e`로 확인한다. 실행하지 못한 검증은 분명히 보고한다.
 - Playwright는 이 환경의 `/usr/bin/chromium`을 자동 사용한다. 브라우저 다운로드를 필수 단계로 추가하지 않는다.
 - 향후 저장 기능은 데이터 버전과 잘못된 localStorage 값 처리부터 설계한다. 추천 로직은 화면과 분리하고 호환성 검사를 재사용한다.
+- 전면전 모델은 `src/types/warfare.ts`, 정규화/검증은 `warfare-data.ts`, `warfare-validation.ts`를 사용한다. `warfare.ts`는 기존 코드용 진입점이다. 샘플 엔진과 분리하고, 미확인 조합을 호환 가능으로 추정하지 않는다.
+- DFTTK 조사와 이용 범위는 `docs/dfttk-analysis.md`, `docs/data-sources.md`를 읽는다. 공개 계약은 코드·전체 데이터 재배포 허락이 아니다. 자동 수집이나 상시 연동은 이용 권한 확인 전 추가하지 않는다.
