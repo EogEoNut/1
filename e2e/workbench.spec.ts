@@ -1,9 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-test.beforeEach(async ({ page }) => { await page.goto('/') })
+test.beforeEach(async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: '가상 샘플 작업대', exact: true }).click()
+})
 
 test('샘플 표시, 검색, 종류 필터와 빈 결과 복구', async ({ page }) => {
-  await expect(page.getByText('현재 모든 총기·부착물·슬롯·수치는')).toBeVisible()
+  await expect(page.getByText('선택한 총기·부착물·슬롯·수치는')).toBeVisible()
   await expect(page.locator('.weapon-card')).toHaveCount(3)
   await page.getByRole('textbox', { name: '총기 이름 또는 종류 검색' }).fill('스위프트')
   await expect(page.locator('.weapon-card')).toHaveCount(1)

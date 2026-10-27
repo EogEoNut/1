@@ -31,7 +31,7 @@ const calibrationLabels: Record<string, string> = {
   horizontal_recoil: '수평 반동', hipfire_accuracy: '지향 사격 정밀도',
 }
 
-export function WarfareExplorer() {
+export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: boolean; weaponName?: string }) {
   const [name, setName] = useState('M4A1')
   const [query, setQuery] = useState('')
   const [selection, setSelection] = useState<Record<string, string>>({})
@@ -39,7 +39,7 @@ export function WarfareExplorer() {
   const [slotFilter, setSlotFilter] = useState('전체')
   const [partQuery, setPartQuery] = useState('')
   const [notice, setNotice] = useState('')
-  const weapon = weapons.find(item => item.name === name) ?? weapons[0]
+  const weapon = weapons.find(item => item.name === (weaponName ?? name)) ?? weapons[0]
   const stats = calculate(weapon, selection)
   const filteredWeapons = weapons.filter(item => item.name.toLowerCase().includes(query.toLowerCase().trim()))
   const supportedSlots = weapon.slots.map(slot => slot.id)
@@ -65,17 +65,19 @@ export function WarfareExplorer() {
     catch { setNotice('이 환경에서는 자동 복사를 사용할 수 없습니다. 표시된 코드를 직접 선택해 복사하세요.') }
   }
 
-  return <main className="warfare-explorer" aria-label="전면전 총기 자료">
-    <div className="warfare-head"><div><p className="eyebrow">WARFARE / SOURCE CATALOG</p><h1>전면전 총기·부착물 자료</h1></div><span className="sample-badge">사이트 관측 · 게임 내 미검증</span></div>
+  const Root = embedded ? 'section' : 'main'
+  const Heading = embedded ? 'h3' : 'h1'
+  return <Root id={embedded ? undefined : 'warfare-catalog'} className={`warfare-explorer ${embedded ? 'warfare-embedded' : ''}`} aria-label={embedded ? '전면전 총기 개조' : '전면전 총기 자료'}>
+    <div className="warfare-head"><div><p className="eyebrow">WARFARE / SOURCE CATALOG</p><Heading>전면전 총기·부착물 자료</Heading></div><span className="sample-badge">사이트 관측 · 게임 내 미검증</span></div>
     <p className="warfare-warning">{metadata.season} · 자료 확인 {metadata.date}. DFTTK 편집기 관측 기록과 Aim Sector 공개 빌드 예시를 구분해 제공합니다. 전체 총기·부착물 데이터베이스가 아니며, 기록이 없다는 이유로 장착 불가를 뜻하지 않습니다.</p>
-    <div className="warfare-coverage" aria-label="자료 수록 현황">
+    {!embedded && <div className="warfare-coverage" aria-label="자료 수록 현황">
       <div><strong>{metadata.weaponCount}</strong><span>총기 이름 목록</span></div>
       <div><strong>{metadata.baseCount}</strong><span>기본 정보 수록 총기</span></div>
       <div><strong>{metadata.dfttkPartCount}</strong><span>DFTTK 부착물 기록</span></div>
       <div><strong>{metadata.observedWeaponCount}</strong><span>DFTTK 장착 목록 관측 총기</span></div>
-    </div>
+    </div>}
 
-    <div className="warfare-layout"><aside className="warfare-card">
+    <div className="warfare-layout">{!embedded && <aside className="warfare-card">
       <label htmlFor="warfare-search">총기 검색 ({weapons.length}종)</label>
       <input id="warfare-search" value={query} placeholder="AKM, M4A1…" onChange={event => setQuery(event.target.value)} />
       <div className="warfare-weapon-list">{filteredWeapons.map(item => <button key={item.name} aria-pressed={item.name === weapon.name} className={item.name === weapon.name ? 'selected' : ''} onClick={() => choose(item.name)}>
@@ -83,7 +85,7 @@ export function WarfareExplorer() {
       </button>)}</div>
       {!filteredWeapons.length && <p className="warfare-note">검색 결과가 없습니다. <button className="text-button" onClick={() => setQuery('')}>검색 초기화</button></p>}
       <p className="warfare-note">전면전(Warfare) 자료만 수록합니다. 비콘 에어리어·폭파 모드의 수치로 대체하지 않습니다.</p>
-    </aside>
+    </aside>}
 
     <div className="warfare-card warfare-main">
       <div className="warfare-title"><div><p className="eyebrow">WEAPON RECORD</p><h2>{weapon.name}</h2><p className="warfare-note">분류: {weapon.category ?? '미확인'} · 게임 버전: {weapon.evidence.gameVersion ?? '미확인'}</p></div><span className="count-badge">{weapon.parts.length}개 관측 파츠</span></div>
@@ -122,5 +124,5 @@ export function WarfareExplorer() {
       <WarfareRecommendation weapon={weapon} />
     </div></div>
     <p className="warfare-note warfare-footer-note">자료 출처: <a href="https://dfttk.com/battlefield/builder" target="_blank" rel="noreferrer">DFTTK 전면전 편집기</a> · <a href="https://www.aimsector.com/news/delta-force-loadouts" target="_blank" rel="noreferrer">Aim Sector</a>. 수록 범위와 확인일은 위에 표시합니다. 자료 미확인과 게임 내 미검증을 구분해 확인하세요.</p>
-  </main>
+  </Root>
 }

@@ -78,6 +78,27 @@
 .warfare-recommendation .warfare-deltas { margin-top:14px; color:#bcda9f; }
 .warfare-recommendation .warfare-empty { text-align:left; font-size:11px; }
 .warfare-recommendation .warfare-empty ul { padding-left:18px; margin:10px 0; list-style:disc; }
+.workspace-nav { display:flex; flex-wrap:wrap; gap:8px; max-width:1640px; padding:0 38px; margin:20px auto 0; }
+.workspace-nav button { padding:9px 12px; border:1px solid #35442e; border-radius:4px; color:#9daf92; background:transparent; font-size:11px; }
+.workspace-nav button[aria-pressed=true] { color:#c9e8ac; background:#2b3c22; border-color:#789a54; }
+.workspace-nav button:hover { border-color:#b0d582; }
+.dataset-filters { display:flex; flex-wrap:wrap; gap:5px; padding:16px 14px 0; }
+.dataset-filters button { font-size:10px; color:#93a386; border:1px solid #394831; background:#182014; border-radius:3px; padding:6px 7px; }
+.dataset-filters button.active { background:#344827; color:#d0eeb2; border-color:#88aa61; }
+.weapon-list { max-height:700px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:#526b42 #172116; }
+.weapon-list>.weapon-card { flex-shrink:0; }
+.weapon-card-top { flex-wrap:wrap; gap:5px; }
+.weapon-data-tag { font-size:8px; color:#9ab284; padding:2px 4px; border:1px solid #415235; border-radius:2px; }
+.source-weapon-card .weapon-card-bottom { margin-top:13px; gap:8px; }
+.source-weapon-card .weapon-card-bottom strong { overflow-wrap:anywhere; }
+.source-weapon-card .weapon-card-bottom .micro { font-family:var(--font-sans); letter-spacing:0; font-size:9px; line-height:1.7; }
+.source-workbench { grid-column:2 / -1; min-width:0; }
+.warfare-embedded { margin:0; padding:20px; max-width:none; }
+.warfare-embedded .warfare-head h3 { font-size:20px; font-weight:600; margin-top:7px; }
+.warfare-embedded .warfare-layout { display:block; }
+.warfare-embedded .warfare-main { border:0; padding:0; background:transparent; }
+@media(max-width:1180px) { .workspace-nav { padding:0 24px; } }
+@media(max-width:700px) { .workspace-nav { padding:0 16px; gap:6px; margin-top:15px; } .workspace-nav button { padding:8px; font-size:9px; } .weapon-list { max-height:310px; } .source-weapon-card .weapon-card-bottom { margin-top:10px; } .source-weapon-card .weapon-card-bottom .micro { font-size:8px; } .warfare-embedded { padding:15px; } }
 @media(max-width:1050px) { .warfare-specs { grid-template-columns:repeat(3,minmax(0,1fr)); } .warfare-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:850px) { .warfare-layout { grid-template-columns:1fr; } .warfare-weapon-list { max-height:240px; } .warfare-coverage { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:550px) { .warfare-explorer { padding:0 16px; } .warfare-head h1 { font-size:24px; } .warfare-warning { font-size:10px; padding:12px; } .warfare-card { padding:15px; } .warfare-coverage>div { padding:14px; } .warfare-coverage span { font-size:9px; line-height:1.8; } .warfare-specs { grid-template-columns:repeat(2,minmax(0,1fr)); } .warfare-filters { grid-template-columns:1fr 1fr; } .warfare-filters>label:first-child { grid-column:1/-1; } .warfare-part { padding:11px; } .warfare-part-details { padding-left:0; } .warfare-specs dd { font-size:17px; } }
