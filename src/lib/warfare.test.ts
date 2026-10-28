@@ -1,68 +1,62 @@
 import { describe, expect, it } from 'vitest'
-import { calculate, metadata, weapons } from './warfare'
-import { warfareCatalog } from './warfare-data'
-import seed from '../data/warfare_seed.json'
+import { baseStatKeys } from '../types/warfare'
+import database from '../data/warfare_namuwiki.json'
+import { loadWarfareCatalog, warfareCatalog } from './warfare-data'
+import { calculate, metadata } from './warfare'
 import { mathFixture } from './test-fixtures/warfare'
 
-const m4 = weapons.find(weapon => weapon.name === 'M4A1')!
-const akm = weapons.find(weapon => weapon.name === 'AKM')!
-
-describe('출처 기반 전면전 자료', () => {
-  it('목록과 출처를 구분하고 원자료 확인일을 유지한다', () => {
-    expect(new Set(weapons.map(weapon => weapon.name)).size).toBe(weapons.length)
-    expect(metadata.weaponCount).toBe(66)
-    expect(metadata.attachmentRecordCount).toBe(16)
-    expect(metadata.observedWeaponCount).toBe(1)
-    expect(metadata.date).toBe('2026-10-23')
-    for (const weapon of weapons) {
-      for (const part of weapon.parts) {
-        expect(part.evidence.observedAt).toBe('2026-10-23')
-        expect(part.evidence.sourceUrl).toMatch(/^https:\/\//)
-        expect(part.evidence.gameVerified).toBe(false)
-      }
-    }
+describe('독립 전면전 기본 데이터베이스', () => {
+  it('접근 실패를 관측 성공으로 가장하지 않고 총기 등록을 보류한다', () => {
+    expect(database.source.accessStatus).toBe('blocked')
+    expect(database.source.observedAt).toBeNull()
+    expect(database.source.gameVersion).toBeNull()
+    expect(database.source.license.status).toBe('unconfirmed')
+    expect(warfareCatalog.weapons).toEqual([])
+    expect(warfareCatalog.attachments).toEqual([])
+    expect(metadata).toMatchObject({ weaponCount: 0, baseCount: 0, attachmentRecordCount: 0, date: null, season: null })
   })
-  it('제거된 외부 수치를 0으로 대체하지 않고 남겨 둔 출처의 단위를 보존한다', () => {
-    expect(m4.base).toBeNull()
-    expect(m4.baseEvidence).toBeNull()
-    expect(m4.parts).toEqual([])
-    expect(akm.base?.range_m).toBe(30)
-    expect(akm.base?.rpm).toBe(600)
-    expect(akm.base?.ads_ms).toBe(327)
+  it('제거된 출처의 자료와 코드가 새 데이터에 남아 있지 않다', () => {
+    expect(JSON.stringify(database)).not.toMatch(/aim[ -]?sector|dfttk/i)
+    expect(JSON.stringify(warfareCatalog)).not.toMatch(/aim[ -]?sector|dfttk/i)
   })
-  it('제거 요청된 출처가 원자료와 실행 카탈로그에 남아 있지 않다', () => {
-    expect(JSON.stringify(seed)).not.toMatch(/dfttk/i)
-    expect(JSON.stringify(warfareCatalog)).not.toMatch(/dfttk/i)
-    expect(metadata.sourceNames).toEqual(['Aim Sector'])
+  it('새 레코드의 null과 0 및 단위를 보존한다 (외부 자료가 아닌 테스트 입력)', () => {
+    const weapon = mathFixture()
+    weapon.parts = []
+    weapon.slots = []
+    weapon.base!.damage = 0
+    weapon.base!.muzzle_velocity_mps = 123
+    weapon.fireModes = ['단발', '연사']
+    const result = loadWarfareCatalog({ ...database, weapons: [weapon] }).weapons[0]
+    expect(result.base!.damage).toBe(0)
+    expect(result.base!.muzzle_velocity_mps).toBe(123)
+    expect(result.base!.capacity).toBeNull()
+    expect(result.nameEn).toBe('Synthetic fixture')
+    expect(result.fireModes).toEqual(['단발', '연사'])
   })
-  it('표시 변화량을 합산하되 기본 자료와 부착물을 변경하지 않는다', () => {
+  it('중복 이름 정규화, 누락된 단위 필드 및 다른 모드를 검사한다', () => {
+    const a = mathFixture()
+    const b = { ...mathFixture(), id: 'fixture:other', name: '계산검사전용' }
+    expect(() => loadWarfareCatalog({ ...database, weapons: [a, b] })).toThrow('총기 이름')
+    const missing = mathFixture()
+    delete (missing.base as Partial<typeof missing.base>)!.muzzle_velocity_mps
+    expect(() => loadWarfareCatalog({ ...database, weapons: [missing] })).toThrow('유한한 숫자')
+    expect(() => loadWarfareCatalog({ ...database, mode: 'Operations' })).toThrow('모드')
+    expect(() => loadWarfareCatalog({ ...database, weapons: [{ ...a, mode: 'Operations' }] })).toThrow('다른 모드')
+  })
+  it('사격 모드와 한국어/영어 이름을 추측 없이 검사한다', () => {
+    expect(() => loadWarfareCatalog({ ...database, weapons: [{ ...mathFixture(), fireModes: '' }] })).toThrow('사격 모드')
+    expect(() => loadWarfareCatalog({ ...database, weapons: [{ ...mathFixture(), nameKo: 0 }] })).toThrow('한국어/영어')
+  })
+  it('참고 합산과 미확인 수치를 유지한다', () => {
     const fixture = mathFixture()
-    const part = fixture.parts[0]
     const before = structuredClone(fixture)
+    const part = fixture.parts[0]
     const result = calculate(fixture, { [part.slot]: part.id })
     expect(result.control.final).toBe(20)
     expect(result.handling.final).toBe(34)
     expect(result.stability.final).toBe(38)
     expect(fixture).toEqual(before)
-  })
-  it('수치가 없는 부착물은 최종 참고값을 미확인으로 표시한다', () => {
-    const part = akm.parts[0]
-    const result = calculate(akm, { [part.slot]: part.id })
-    expect(result.control.base).toBe(39)
-    expect(result.control.final).toBeNull()
-    expect(result.control.unknownCount).toBe(1)
-  })
-  it('잘못된 슬롯과 총기 기록에 없는 부품을 거절한다', () => {
-    expect(() => calculate(akm, { muzzle: akm.parts[0].id })).toThrow('슬롯')
-    expect(() => calculate(m4, { rear_grip: 'missing' })).toThrow('관측 파츠')
-  })
-  it('기본 수치가 없는 총기를 0점으로 표시하지 않는다', () => {
-    const weapon = weapons.find(item => !item.base)!
-    expect(calculate(weapon, {}).control.final).toBeNull()
-  })
-  it('정밀 보정 사례를 기본 효과에 더하지 않는다', () => {
-    expect(akm.calibrations.length).toBe(12)
-    expect(calculate(akm, {}).control.final).toBe(39)
-    expect(calculate(akm, {}).control.knownDelta).toBe(0)
+    fixture.base = Object.fromEntries(baseStatKeys.map(key => [key, null])) as typeof fixture.base
+    expect(calculate(fixture, {}).control.final).toBeNull()
   })
 })

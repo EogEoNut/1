@@ -27,7 +27,7 @@ export default function App() {
   const infoDialog = useRef<HTMLDialogElement>(null)
   const pickerRef = useRef<HTMLDivElement>(null)
   const weapon = selected.kind === 'sample' ? selected.weapon : catalog.weapons[0]
-  const sourceMode = view === 'warfare' || selected.kind === 'warfare'
+  const sourceMode = view === 'warfare' || dataset === 'warfare' || selected.kind === 'warfare'
   const current = calculateStats(weapon, loadout, catalog.attachments, catalog.statModel)
   const count = Object.keys(loadout).length
   const categories = workbenchCategories(dataset)
@@ -62,7 +62,8 @@ export default function App() {
     setDataset(next)
     setSearch('')
     setCategory('전체')
-    if (next !== 'all' && selected.kind !== next) selectWeapon(workbenchWeapons.find(entry => entry.kind === next)!)
+    const first = workbenchWeapons.find(entry => entry.kind === next)
+    if (next !== 'all' && selected.kind !== next && first) selectWeapon(first)
   }
   function openSamples() {
     setView('workbench')
@@ -115,17 +116,17 @@ export default function App() {
       <div className="header-right"><span className="version-chip"><i />MVP 0.1</span><button className="data-button" onClick={() => infoDialog.current?.showModal()}><Icon name="info" size={16} /><span>데이터 안내</span></button></div>
     </header>
 
-    <nav aria-label="데이터 모드 선택" className="workspace-nav"><button aria-pressed={view === 'workbench' && dataset !== 'sample'} onClick={() => { setView('workbench'); chooseDataset('all') }}>개조 작업대</button><button aria-pressed={view === 'warfare'} onClick={() => setView('warfare')}>전면전 실제 자료 (부분 수집)</button><button aria-pressed={view === 'workbench' && dataset === 'sample'} onClick={openSamples}>가상 샘플 작업대</button></nav>
+    <nav aria-label="데이터 모드 선택" className="workspace-nav"><button aria-pressed={view === 'workbench' && dataset !== 'sample'} onClick={() => { setView('workbench'); chooseDataset('all') }}>개조 작업대</button><button aria-pressed={view === 'warfare'} onClick={() => setView('warfare')}>전면전 기본 총기 자료</button><button aria-pressed={view === 'workbench' && dataset === 'sample'} onClick={openSamples}>가상 샘플 작업대</button></nav>
     {view==='warfare' ? <WarfareExplorer key={`catalog-${homeKey}`} /> : <>
     <main>
-      <section className="page-intro"><div><p className="eyebrow"><span className="tiny-square" /> BUILD YOUR ADVANTAGE</p><h1 id="home-title" tabIndex={-1}>당신의 전투에 맞는 <span>한 자루.</span></h1><p className="intro-description">전면전 자료 {warfareMetadata.weaponCount}종과 가상 샘플 {catalog.weapons.length}종을 선택하고, 수록된 정보와 부착물을 확인하세요.</p></div><div className="intro-index"><span>WORKBENCH</span><strong>01 <span>/ 01</span></strong></div></section>
+      <section className="page-intro"><div><p className="eyebrow"><span className="tiny-square" /> BUILD YOUR ADVANTAGE</p><h1 id="home-title" tabIndex={-1}>당신의 전투에 맞는 <span>한 자루.</span></h1><p className="intro-description">전면전 자료 {warfareMetadata.weaponCount}종 · 가상 샘플 {catalog.weapons.length}종. {warfareMetadata.weaponCount ? '총기를 선택해 기본 정보와 출처를 확인하세요.' : '실제 총기 자료는 등록 대기 중이며, 가상 샘플로 개조 기능을 체험할 수 있습니다.'}</p></div><div className="intro-index"><span>WORKBENCH</span><strong>01 <span>/ 01</span></strong></div></section>
 
-      {selected.kind === 'sample' ? <div className="sample-banner"><span className="sample-badge">SAMPLE DATA</span><p>선택한 총기·부착물·슬롯·수치는 <strong>가상 샘플</strong>입니다. 실제 델타포스 게임 성능을 나타내지 않습니다.</p><button onClick={() => infoDialog.current?.showModal()} aria-label="샘플 데이터 상세 안내"><Icon name="arrow" size={18} /></button></div> : <div className="sample-banner"><span className="sample-badge">SOURCE DATA</span><p><strong>전면전 관측 자료</strong> · 수치와 부착물은 확인된 범위만 표시합니다. 자료가 없는 항목은 미확인으로 표시하며, 샘플 수치로 채우지 않습니다.</p><button onClick={() => infoDialog.current?.showModal()} aria-label="전면전 자료 상세 안내"><Icon name="arrow" size={18} /></button></div>}
+      {!sourceMode ? <div className="sample-banner"><span className="sample-badge">SAMPLE DATA</span><p>선택한 총기·부착물·슬롯·수치는 <strong>가상 샘플</strong>입니다. 실제 델타포스 게임 성능을 나타내지 않습니다.</p><button onClick={() => infoDialog.current?.showModal()} aria-label="샘플 데이터 상세 안내"><Icon name="arrow" size={18} /></button></div> : <div className="sample-banner"><span className="sample-badge">SOURCE DATA</span><p><strong>전면전 관측 자료</strong> · 수치와 부착물은 확인된 범위만 표시합니다. 자료가 없는 항목은 미확인으로 표시하며, 샘플 수치로 채우지 않습니다.</p><button onClick={() => infoDialog.current?.showModal()} aria-label="전면전 자료 상세 안내"><Icon name="arrow" size={18} /></button></div>}
 
       <div className="workspace-grid">
         <WeaponList weapons={filtered} selected={selected} dataset={dataset} search={search} category={category} categories={categories} onSearch={setSearch} onCategory={setCategory} onSelect={selectWeapon} onDataset={chooseDataset} />
 
-        {selected.kind === 'warfare' ? <section className="workbench panel source-workbench" id="workbench" aria-label="개조 작업대"><div className="panel-heading"><h2>개조 작업대</h2><span className="workbench-status"><i />전면전 관측 자료</span></div><WarfareExplorer key={`${homeKey}-${selected.id}`} embedded weaponName={selected.weapon.name} /></section> : <>
+        {(selected.kind === 'warfare' || dataset === 'warfare') ? <section className="workbench panel source-workbench" id="workbench" aria-label="개조 작업대"><div className="panel-heading"><h2>개조 작업대</h2><span className="workbench-status"><i />전면전 관측 자료</span></div><WarfareExplorer key={`${homeKey}-${selected.id}`} embedded weaponName={selected.kind === 'warfare' ? selected.weapon.name : undefined} /></section> : <>
 
         <section className="workbench panel" id="workbench" aria-label="개조 작업대">
           <div className="panel-heading"><h2>개조 작업대</h2><span className="workbench-status"><i />{count ? 'CUSTOM BUILD' : 'BASE CONFIGURATION'}</span></div>
@@ -154,12 +155,12 @@ export default function App() {
     </main>
     </>}
 
-    <footer><span><strong>DELTA LAB</strong> <span className="muted">/</span> 비공식 팬 프로젝트</span><p>Delta Force와 공식적인 제휴 관계가 없습니다.</p><span className="mono">{sourceMode ? `SOURCE RECORDS · ${warfareMetadata.date}` : 'SAMPLE DATASET · v1.0'}</span></footer>
+    <footer><span><strong>DELTA LAB</strong> <span className="muted">/</span> 비공식 팬 프로젝트</span><p>Delta Force와 공식적인 제휴 관계가 없습니다.</p><span className="mono">{sourceMode ? `SOURCE RECORDS · ${warfareMetadata.date ?? '미수집'}` : 'SAMPLE DATASET · v1.0'}</span></footer>
     <div className={`toast ${notice ? 'visible' : ''}`} role="status" aria-live="polite">{notice && <><Icon name="check" size={16} />{notice}</>}</div>
 
     <dialog ref={infoDialog} aria-labelledby="data-dialog-title" className="data-dialog" onClick={event => { if (event.target === event.currentTarget) infoDialog.current?.close() }}>
       <div className="dialog-heading"><span className="eyebrow">DATA TRANSPARENCY</span><button className="icon-button" aria-label="데이터 안내 닫기" onClick={() => infoDialog.current?.close()}><Icon name="close" /></button></div><h2 id="data-dialog-title">{sourceMode ? '전면전 자료 안내' : '샘플 데이터 안내'}</h2>
-      {sourceMode ? <><p>수록된 총기 이름은 {warfareMetadata.weaponCount}종이지만 기본 제원이 있는 총기는 {warfareMetadata.baseCount}종입니다. 부착물은 총기별 수록 범위가 다릅니다. 게임 내 미검증 자료이며, 가상 샘플과 별도로 계산합니다.</p><dl><div><dt>자료 확인일</dt><dd>{warfareMetadata.date} · {warfareMetadata.season}</dd></div><div><dt>출처</dt><dd>Aim Sector 기존 공개 빌드</dd></div><div><dt>수치 미확인</dt><dd>0이나 샘플 수치로 대체하지 않습니다. 이름만 있는 총기도 목록에서 선택할 수 있습니다.</dd></div><div><dt>계산과 호환성</dt><dd>알려진 변화량의 참고 합계입니다. 관측된 부품·조합만 선택하며 실제 게임 최종 성능이나 전체 호환성을 보장하지 않습니다.</dd></div></dl></> : <><p>{catalog.notice}</p>
+      {sourceMode ? <><p>수록된 총기 이름은 {warfareMetadata.weaponCount}종이지만 기본 제원이 있는 총기는 {warfareMetadata.baseCount}종입니다. 기본 자료의 대상 출처는 나무위키이며, {warfareMetadata.weaponCount ? '확인된 범위의 기본 정보를 표시합니다.' : '원문 접근이 제한되어 등록을 보류했습니다.'} 부착물 데이터 미등록 · 가상 샘플과 분리합니다.</p><dl><div><dt>자료 확인일</dt><dd>{warfareMetadata.date ?? '미확인'} · 게임 버전 {warfareMetadata.season ?? '미확인'}</dd></div><div><dt>출처</dt><dd>나무위키 무기 문서 · {warfareMetadata.weaponCount ? '외부 자료 관측 · 게임 내 미검증' : '현재 접근 제한으로 미수집'}</dd></div><div><dt>수치 미확인</dt><dd>0이나 샘플 수치로 대체하지 않습니다. 이름만 있는 총기도 목록에서 선택할 수 있습니다.</dd></div><div><dt>계산과 호환성</dt><dd>알려진 변화량의 참고 합계입니다. 관측된 부품·조합만 선택하며 실제 게임 최종 성능이나 전체 호환성을 보장하지 않습니다.</dd></div></dl></> : <><p>{catalog.notice}</p>
       <dl><div><dt>데이터 버전</dt><dd>{catalog.version}</dd></div><div><dt>출처</dt><dd>기능 검증을 위해 자체 제작한 가상 데이터</dd></div><div><dt>게임 내 검증일</dt><dd>미검증 · 실제 게임 버전 미지정</dd></div><div><dt>계산 모델</dt><dd>{catalog.statModel.description}</dd></div><div><dt>호환성</dt><dd>컴팩트 총열과 롱 소음기 제한 등 모든 규칙은 샘플입니다. 실제 슬롯 구조나 개조 코드 호환을 보장하지 않습니다.</dd></div></dl><p className="dialog-note">검증된 게임 자료는 출처·확인일·게임 버전과 함께 별도 데이터셋으로 추가할 예정입니다.</p></>}
       <button className="primary-button" onClick={() => infoDialog.current?.close()}>확인하고 체험하기<Icon name="arrow" /></button>
     </dialog>

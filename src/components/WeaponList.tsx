@@ -29,7 +29,7 @@ export function WeaponList({ weapons, selected, dataset, search, category, categ
         {weapon.kind === 'sample' && <WeaponArt variant={weapon.weapon.silhouette} compact />}
         <div className="weapon-card-bottom"><div><strong>{weapon.name}</strong><span className="micro">{weapon.kind === 'sample' ? weapon.weapon.subtitle.split(' / ')[0] : weapon.weapon.parts.length ? `관측 부품 ${weapon.weapon.parts.length}개` : weapon.weapon.base ? '일부 기본 정보 수록' : '이름 수록 · 제원 미확인'}</span></div><span className="selection-dot">{selected.id === weapon.id && <Icon name="check" size={12} />}</span></div>
       </button>)}
-      {weapons.length === 0 && <div className="empty-state"><Icon name="search" size={26} /><strong>검색 결과가 없습니다</strong><p>다른 이름이나 종류를 입력해 보세요.</p><button className="text-button" onClick={() => { onSearch(''); onCategory('전체') }}>필터 초기화</button></div>}
+      {weapons.length === 0 && <div className="empty-state"><Icon name="search" size={26} /><strong>{dataset === 'warfare' && !workbenchWeapons.some(entry => entry.kind === 'warfare') ? '전면전 총기 자료 미등록' : '검색 결과가 없습니다'}</strong><p>자료가 등록되면 검색·종류 필터로 선택할 수 있습니다.</p><button className="text-button" onClick={() => { onSearch(''); onCategory('전체') }}>필터 초기화</button></div>}
     </div>
     <div className="library-note"><Icon name="info" size={16} /><p>전면전 자료 {workbenchWeapons.filter(entry => entry.kind === 'warfare').length}종 · 가상 샘플 {workbenchWeapons.filter(entry => entry.kind === 'sample').length}종<br />자료와 샘플의 계산·출처는 구분됩니다.</p></div>
   </aside>

@@ -33,7 +33,7 @@ const calibrationLabels: Record<string, string> = {
 }
 
 export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: boolean; weaponName?: string }) {
-  const [name, setName] = useState('M4A1')
+  const [name, setName] = useState(weapons[0]?.name ?? '')
   const [query, setQuery] = useState('')
   const [selection, setSelection] = useState<Record<string, string>>({})
   const [source, setSource] = useState('전체')
@@ -41,8 +41,9 @@ export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: b
   const [partQuery, setPartQuery] = useState('')
   const [notice, setNotice] = useState('')
   const weapon = weapons.find(item => item.name === (weaponName ?? name)) ?? weapons[0]
+  if (!weapon) return <WarfareEmpty embedded={embedded} />
   const stats = calculate(weapon, selection)
-  const filteredWeapons = weapons.filter(item => item.name.toLowerCase().includes(query.toLowerCase().trim()))
+  const filteredWeapons = weapons.filter(item => `${item.name} ${item.nameKo ?? ''} ${item.nameEn ?? ''} ${item.category ?? ''}`.toLowerCase().includes(query.toLowerCase().trim()))
   const supportedSlots = weapon.slots.map(slot => slot.id)
   const visibleParts = weapon.parts.filter(part =>
     (source === '전체' || part.evidence.sourceName === source)
@@ -69,8 +70,8 @@ export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: b
   const Root = embedded ? 'section' : 'main'
   const Heading = embedded ? 'h3' : 'h1'
   return <Root id={embedded ? undefined : 'warfare-catalog'} className={`warfare-explorer ${embedded ? 'warfare-embedded' : ''}`} aria-label={embedded ? '전면전 총기 개조' : '전면전 총기 자료'}>
-    {!embedded && <><div className="warfare-head"><div><p className="eyebrow">WARFARE / SOURCE CATALOG</p><Heading>전면전 총기·부착물 자료</Heading></div><span className="sample-badge">사이트 관측 · 게임 내 미검증</span></div>
-    <p className="warfare-warning">{metadata.season} · 자료 확인 {metadata.date}. Aim Sector 기존 공개 빌드 자료입니다. 전체 총기·부착물 데이터베이스가 아니며, 미수집 수치와 부품은 미확인으로 유지합니다. 이후 직접 등록할 자료로 확장할 수 있습니다.</p></>}
+    {!embedded && <><div className="warfare-head"><div><p className="eyebrow">WARFARE / SOURCE CATALOG</p><Heading>전면전 기본 총기 자료</Heading></div><span className="sample-badge">사이트 관측 · 게임 내 미검증</span></div>
+    <p className="warfare-warning">게임 버전 {weapon.evidence.gameVersion ?? '미확인'} · 자료 확인 {weapon.evidence.observedAt ?? '미확인'}. 출처에서 관측한 전면전 기본 총기 자료입니다. 전체 총기·부착물 데이터베이스가 아니며, 미수집 수치와 부품은 미확인으로 유지합니다. 이후 직접 등록할 자료로 확장할 수 있습니다.</p></>}
     {!embedded && <div className="warfare-coverage" aria-label="자료 수록 현황">
       <div><strong>{metadata.weaponCount}</strong><span>총기 이름 목록</span></div>
       <div><strong>{metadata.baseCount}</strong><span>기본 정보 수록 총기</span></div>
@@ -80,7 +81,7 @@ export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: b
 
     <div className="warfare-layout">{!embedded && <aside className="warfare-card">
       <label htmlFor="warfare-search">총기 검색 ({weapons.length}종)</label>
-      <input id="warfare-search" value={query} placeholder="AKM, M4A1…" onChange={event => setQuery(event.target.value)} />
+      <input id="warfare-search" value={query} placeholder="총기 이름 또는 종류" onChange={event => setQuery(event.target.value)} />
       <div className="warfare-weapon-list">{filteredWeapons.map(item => <button key={item.name} aria-pressed={item.name === weapon.name} className={item.name === weapon.name ? 'selected' : ''} onClick={() => choose(item.name)}>
         <span>{item.name}</span><small>{item.parts.length ? `부착물 ${item.parts.length}개` : item.base ? '일부 기본 정보' : '이름만 수록'}</small>
       </button>)}</div>
@@ -89,11 +90,13 @@ export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: b
     </aside>}
 
     <div className="warfare-card warfare-main">
-      <div className="warfare-title"><div><p className="eyebrow">WEAPON RECORD</p><h2>{weapon.name}</h2><p className="warfare-note">분류: {weapon.category ?? '미확인'} · 게임 버전: {weapon.evidence.gameVersion ?? '미확인'}</p></div><span className="count-badge">{weapon.parts.length}개 관측 파츠</span></div>
+      <div className="warfare-title"><div><p className="eyebrow">WEAPON RECORD</p><h2>{weapon.name}</h2><p className="warfare-note">분류: {weapon.category ?? '미확인'} · 한국어: {weapon.nameKo ?? '미확인'} · 영어: {weapon.nameEn ?? '미확인'} · 게임 버전: {weapon.evidence.gameVersion ?? '미확인'}</p></div><span className="count-badge">{weapon.parts.length}개 관측 파츠</span></div>
       <WeaponImage id={weapon.id} name={weapon.name} category={weapon.category} />
-      {embedded && <p className="warfare-note">Aim Sector 기존 부분 자료 · 자료 확인 {metadata.date} · 게임 내 미검증. 미수집 수치와 부착물은 직접 자료를 등록하기 전까지 미확인으로 표시합니다.</p>}
+      {embedded && <p className="warfare-note">{weapon.evidence.sourceName} 기본 총기 자료 · 자료 확인 {weapon.evidence.observedAt ?? '미확인'} · 게임 내 미검증. 미수집 수치와 부착물은 직접 자료를 등록하기 전까지 미확인으로 표시합니다.</p>}
       <section aria-label="총기 기본 정보"><h3>총기 기본 정보</h3>
         <dl className="warfare-specs">{specDefinitions.map(spec => <div key={spec.key}><dt>{spec.label}</dt><dd>{weapon.base?.[spec.key] ?? '미확인'} {weapon.base?.[spec.key] !== null && weapon.base?.[spec.key] !== undefined && <small>{spec.unit}</small>}</dd></div>)}</dl>
+        <p className="warfare-note">사격 모드: {weapon.fireModes?.join(' · ') ?? '미확인'} · 검증 상태: {weapon.evidence.status === 'verified' ? '게임 내 검증 완료' : weapon.evidence.status === 'observed' ? '외부 자료 관측 · 게임 내 미검증' : '자료 미확인'}</p>
+        <SourceLink evidence={weapon.evidence} />
         {weapon.baseEvidence ? <SourceLink evidence={weapon.baseEvidence} /> : <p className="warfare-note">해당 총기의 기본 수치는 아직 수록하지 않았습니다.</p>}
       </section>
 
@@ -117,7 +120,7 @@ export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: b
             <PartDetails part={part} />
           </article>})}
         </section>)}
-        {!visibleParts.length && <div className="warfare-empty">{weapon.parts.length ? '현재 필터에 맞는 부착물이 없습니다.' : '이 총기의 부착물 자료는 아직 수록하지 않았습니다. 장착 가능한 부품이 없다는 의미는 아닙니다.'}</div>}
+        {!visibleParts.length && <div className="warfare-empty">{weapon.parts.length ? '현재 필터에 맞는 부착물이 없습니다.' : '부착물 데이터 미등록 · 추후 업데이트 예정. 장착 가능한 부품이 없다는 의미는 아닙니다.'}</div>}
       </section>
 
       {!!weapon.calibrations.length && <details className="warfare-reference"><summary>정밀 보정 참고 사례 {weapon.calibrations.length}건 · 계산에 미반영</summary><p className="warfare-note">출처의 특정 빌드 조정 사례이며 부착물의 기본 효과가 아닙니다. 위 합계에 더하지 않습니다.</p>{weapon.calibrations.map((entry, index) => <div key={index}><strong>{entry.attachment}</strong><span>{calibrationLabels[entry.stat] ?? entry.stat}: {entry.delta !== null && entry.delta > 0 ? '+' : ''}{entry.delta ?? '미확인'}{entry.unit}</span><a href={entry.sourceUrl} target="_blank" rel="noreferrer">출처 ↗</a></div>)}</details>}
@@ -126,6 +129,18 @@ export function WarfareExplorer({ embedded = false, weaponName }: { embedded?: b
       <p className="warfare-note" role="status">{notice}</p>
       <WarfareRecommendation weapon={weapon} />
     </div></div>
-    <p className="warfare-note warfare-footer-note">기존 자료 출처: <a href="https://www.aimsector.com/news/delta-force-loadouts" target="_blank" rel="noreferrer">Aim Sector</a>. 수록 범위와 확인일은 위에 표시합니다. 새로운 자료와 이미지는 나중에 직접 등록할 수 있습니다.</p>
+    <p className="warfare-note warfare-footer-note">대상 출처: <a href={metadata.source.url} target="_blank" rel="noreferrer">나무위키 무기 문서</a>. 외부 자료 관측은 게임 내 직접 검증과 구분합니다.</p>
+  </Root>
+}
+
+function WarfareEmpty({ embedded }: { embedded: boolean }) {
+  const Root = embedded ? 'section' : 'main'
+  const Heading = embedded ? 'h3' : 'h1'
+  return <Root id={embedded ? undefined : 'warfare-catalog'} className={`warfare-explorer ${embedded ? 'warfare-embedded' : ''}`} aria-label="전면전 총기 자료">
+    <div className="warfare-head"><div><p className="eyebrow">WARFARE / BASE CATALOG</p><Heading>전면전 기본 총기 자료</Heading></div><span className="sample-badge">수집 대기</span></div>
+    <p className="warfare-warning">나무위키 문서 접근 제한 · 원문을 확인하지 못해 총기 등록을 보류했습니다. 확인하지 않은 이름이나 수치를 채우지 않습니다.</p>
+    <div className="warfare-coverage" aria-label="자료 수록 현황"><div><strong>0</strong><span>수집된 기본 총기</span></div><div><strong>0</strong><span>기본 수치 확인</span></div><div><strong>0</strong><span>부착물 기록</span></div><div><strong>0</strong><span>게임 내 검증</span></div></div>
+    <section className="warfare-card" aria-label="전면전 자료 등록 상태"><h2>전면전 총기 자료 미등록</h2><p className="warfare-note">출처 원문이나 확인 가능한 자료를 제공하면 이 목록에 추가할 수 있습니다. 가상 샘플 작업대에서 개조 기능을 계속 체험할 수 있습니다.</p><dl className="warfare-specs"><div><dt>대상 모드</dt><dd>Warfare</dd></div><div><dt>원문 확인일</dt><dd>미확인</dd></div><div><dt>게임 버전</dt><dd>미확인</dd></div><div><dt>검증 상태</dt><dd>미수집</dd></div></dl>
+    <p className="warfare-note">접근 시도 {metadata.source.attemptedAt} · {metadata.source.note}</p><a className="warfare-source" href={metadata.source.url} target="_blank" rel="noreferrer">대상 출처: 나무위키 무기 문서 ↗</a><p className="warfare-note">라이선스 및 출처 표기 조건: 미확인 · 자료 등록 전에 원문 조건을 확인해야 합니다.</p><div className="warfare-empty">부착물 데이터 미등록 · 추후 업데이트 예정</div></section>
   </Root>
 }

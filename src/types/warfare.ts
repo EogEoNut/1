@@ -1,7 +1,7 @@
 export type VerificationStatus = 'verified' | 'observed' | 'unknown' | 'sample'
 export const warfareStatKeys = ['control', 'handling', 'stability', 'accuracy'] as const
 export type WarfareStat = typeof warfareStatKeys[number]
-export const baseStatKeys = [...warfareStatKeys, 'damage', 'range_m', 'rpm', 'capacity', 'ads_ms', 'sprint_to_fire_ms', 'ads_move_mps'] as const
+export const baseStatKeys = [...warfareStatKeys, 'damage', 'range_m', 'rpm', 'capacity', 'muzzle_velocity_mps', 'ads_ms', 'sprint_to_fire_ms', 'ads_move_mps'] as const
 export type BaseStat = typeof baseStatKeys[number]
 
 interface EvidenceBase {
@@ -65,6 +65,9 @@ export interface WarfareWeapon {
   dataset: 'warfare'
   mode: 'Warfare'
   name: string
+  nameKo: string | null
+  nameEn: string | null
+  fireModes: string[] | null
   category: string | null
   evidence: Evidence
   base: Record<BaseStat, number | null> | null

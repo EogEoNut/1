@@ -1,4 +1,4 @@
-import seed from '../data/warfare_seed.json'
+import { warfareSource } from './warfare-data'
 import { warfareCatalog } from './warfare-data'
 export { warfareCatalog } from './warfare-data'
 export { calculateWarfare as calculate } from './warfare-calculator'
@@ -14,18 +14,20 @@ export const slotNames: Record<string, string> = {
   right_patch: '우측 패널', upper_rail: '상단 레일', charging_handle: '장전 손잡이', tactical_device: '전술 장비',
 }
 export const specDefinitions = [
-  { key: 'damage', label: '자료 표시 피해량', unit: '' },
-  { key: 'range_m', label: '자료 표시 사거리', unit: 'm' },
+  { key: 'damage', label: '기본 몸통 피해량', unit: '' },
+  { key: 'range_m', label: '최적 사거리', unit: 'm' },
   { key: 'rpm', label: '발사 속도', unit: '발/분' },
   { key: 'capacity', label: '기본 장탄수', unit: '발' },
+  { key: 'muzzle_velocity_mps', label: '총구 초속', unit: 'm/s' },
   { key: 'ads_ms', label: '조준 전환 시간', unit: 'ms' },
   { key: 'sprint_to_fire_ms', label: '질주 후 사격 전환', unit: 'ms' },
   { key: 'ads_move_mps', label: '조준 이동 속도', unit: 'm/s' },
 ] as const
 export const metadata = {
-  mode: 'Warfare', date: seed.manifest.as_of, season: seed.manifest.season, complete: false,
+  mode: 'Warfare', date: warfareSource.observedAt, season: warfareSource.gameVersion, complete: false,
+  source: warfareSource,
   weaponCount: weapons.length, baseCount: weapons.filter(weapon => weapon.base).length,
   attachmentRecordCount: warfareCatalog.attachments.length,
-  sourceNames: [...new Set(warfareCatalog.attachments.map(part => part.evidence.sourceName))],
+  sourceNames: [...new Set(weapons.map(weapon => weapon.evidence.sourceName))],
   observedWeaponCount: weapons.filter(weapon => weapon.parts.length > 0).length,
 }

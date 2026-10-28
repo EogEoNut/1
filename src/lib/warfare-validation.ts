@@ -7,6 +7,7 @@ function validDate(value: unknown): boolean {
     && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0, 10) === value
 }
 function validateEvidence(evidence: Evidence) {
+  if (!evidence || typeof evidence !== 'object') fail('출처 정보 누락')
   if (!['verified', 'observed', 'unknown', 'sample'].includes(evidence.status)) fail('알 수 없는 검증 상태')
   if (evidence.status === 'sample') fail('샘플 출처를 전면전 자료에 혼합할 수 없음')
   if (evidence.sourceUrl !== null) {
@@ -30,8 +31,20 @@ function finiteOrNull(value: unknown, label: string) {
 /** Validates adapters before any UI, calculator or recommendation consumes them. */
 export function validateWarfareCatalog(catalog: WarfareCatalog): void {
   if (catalog.schemaVersion !== 1 || catalog.dataset !== 'warfare' || catalog.mode !== 'Warfare') fail('잘못된 데이터셋 또는 모드')
+  for (const weapon of catalog.weapons) {
+    if (!weapon || typeof weapon !== 'object' || typeof weapon.name !== 'string' || !weapon.name.trim()) fail('총기 이름 누락')
+    for (const key of ['nameKo', 'nameEn'] as const) {
+      if (weapon[key] !== null && (typeof weapon[key] !== 'string' || !weapon[key]!.trim())) fail('총기 한국어/영어 이름은 문자열 또는 null이어야 함')
+    }
+    if (weapon.fireModes !== null && (!Array.isArray(weapon.fireModes) || !weapon.fireModes.length || weapon.fireModes.some(mode => typeof mode !== 'string' || !mode.trim()))) fail('사격 모드는 비어 있지 않은 배열 또는 null이어야 함')
+    for (const key of ['slots', 'parts', 'codes', 'calibrations', 'observedCombinations', 'compatibilityRules'] as const) {
+      if (!Array.isArray(weapon[key])) fail(`총기 ${key} 배열 누락`)
+    }
+    if (!weapon.coverage || typeof weapon.coverage.slotsComplete !== 'boolean' || typeof weapon.coverage.compatibilityComplete !== 'boolean') fail('총기 수록 범위 누락')
+    if (weapon.base !== null && (typeof weapon.base !== 'object' || !weapon.base)) fail('기본 수치는 객체 또는 null이어야 함')
+  }
   unique(catalog.weapons.map(item => item.id), '총기')
-  unique(catalog.weapons.map(item => item.name), '총기 이름')
+  unique(catalog.weapons.map(item => item.name.normalize('NFKC').replace(/[\s-]/g, '').toLowerCase()), '총기 이름')
   unique(catalog.attachments.map(item => item.id), '부착물')
   const weapons = new Map(catalog.weapons.map(item => [item.id, item]))
   const parts = new Map(catalog.attachments.map(item => [item.id, item]))
